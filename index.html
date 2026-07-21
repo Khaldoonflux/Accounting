@@ -277,7 +277,7 @@
     cursor: pointer;
   }
 
-  .completed-text {
+  .job-field .value.completed-text {
     text-align: center;
     color: var(--green);
     font-weight: 800;
@@ -300,6 +300,11 @@
   .summary-block.yellow-block {
     background: linear-gradient(135deg, var(--accent), var(--gold));
     color: #2b2000;
+  }
+  .summary-block .field-label {
+    color: inherit;
+    text-align: right;
+    margin-bottom: 4px;
   }
 
   .job-field {
@@ -600,9 +605,11 @@
         </div>
 
         <div class="summary-block green-block" id="custSummaryBlock" onclick="openCustomerPaymentPage()">
+          <div class="field-label">من الزبون</div>
           <div id="custSummary">-</div>
         </div>
         <div class="summary-block yellow-block" id="vendSummaryBlock" onclick="openVendorPaymentPage()">
+          <div class="field-label">للمجهزين</div>
           <div id="vendSummary">-</div>
         </div>
       </div>
