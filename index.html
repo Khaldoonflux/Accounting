@@ -787,12 +787,15 @@
     document.getElementById(id).classList.add('active');
     var backBtn = document.getElementById('backBtn');
     var header = document.querySelector('.header');
+    var container = document.querySelector('.container');
 
     if (id === 'screenCustomerPayment' || id === 'screenVendorPayment') {
       header.style.display = 'none';
+      container.style.display = 'none';
       return;
     }
     header.style.display = '';
+    container.style.display = '';
 
     if (id === 'screenHome') {
       backBtn.classList.remove('show');
