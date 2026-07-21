@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0410">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="تكلفة وسعر العمل">
+<title>حاسبة تكلفة وسعر العمل</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0410;
+    --surface: #1a0f2e;
+    --card: #2d1b4e;
+    --accent: #ffc107;
+    --accent2: #ffb300;
+    --gold: #ffdb58;
+    --text: #ffffff;
+    --muted: #b0a0d0;
+    --border: rgba(255, 193, 7, 0.15);
+    --input-bg: rgba(0, 0, 0, 0.2);
+    --green: #00ff88;
+    --danger: #ff5c5c;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
+    background: #0a0410;
+  }
+
+  input, button, select, textarea {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  body {
+    font-family: 'Almarai', sans-serif;
+    background: linear-gradient(135deg, #0a0410 0%, #1a0f2e 50%, #2d1b4e 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body > * { position: relative; z-index: 1; }
+
+  .header {
+    background: linear-gradient(135deg, #0f0521 0%, #1a0f2e 50%, #2d1b4e 100%);
+    padding: 24px 20px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .back-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Almarai', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: none;
+  }
+  .back-btn.show { display: inline-block; }
+
+  .container { padding: 20px 16px 60px 16px; max-width: 500px; margin: 0 auto; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    overflow: hidden;
+    margin-bottom: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .field-row:last-child { border-bottom: none; }
+
+  .field-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .field-label .req { color: var(--accent); margin-inline-start: 3px; }
+
+  .field-input, .field-select, .field-textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Almarai', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 12px;
+    outline: none;
+    width: 100%;
+    text-align: right;
+  }
+  .field-input[readonly] { color: var(--gold); opacity: 0.9; }
+  .field-textarea { resize: vertical; min-height: 60px; font-weight: 400; }
+
+  select.field-select {
+    text-align: right;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+    background-position: left 14px top 50%, left 9px top 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+  select.field-select option { background: var(--surface); color: var(--text); }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    color: #0f0f14;
+    font-family: 'Almarai', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    font-family: 'Almarai', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .home-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .home-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 193, 7, 0.25);
+    border-radius: var(--radius);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .home-btn .title {
+    font-size: 19px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .home-btn .sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  .job-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .nav-arrow {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 800;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .job-position {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .job-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    padding: 4px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    touch-action: pan-y;
+    cursor: pointer;
+  }
+
+  .completed-text {
+    text-align: center;
+    color: var(--green);
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .summary-block {
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .summary-block.green-block {
+    background: linear-gradient(135deg, var(--green), #00b368);
+    color: #052e1a;
+  }
+  .summary-block.yellow-block {
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    color: #2b2000;
+  }
+
+  .job-field {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .job-field:last-child { border-bottom: none; }
+  .job-field .label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .job-field .value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .job-field.code .value {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .payment-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .payment-actions .btn-primary,
+  .payment-actions .btn-secondary { margin-top: 0; }
+
+  .btn-customer-pay {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--green), #00b368);
+    color: #052e1a;
+    font-family: 'Almarai', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin-top: 0;
+  }
+
+  .btn-vendor-pay {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    color: #2b2000;
+    font-family: 'Almarai', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin-top: 0;
+  }
+
+  #jobViewWrap {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  #jobViewWrap.anim-out-left { transform: translateX(-24px); opacity: 0; }
+  #jobViewWrap.anim-out-right { transform: translateX(24px); opacity: 0; }
+  #jobViewWrap.anim-in-prep-left { transition: none !important; transform: translateX(-24px); opacity: 0; }
+  #jobViewWrap.anim-in-prep-right { transition: none !important; transform: translateX(24px); opacity: 0; }
+
+  .payment-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .payment-item:last-child { border-bottom: none; }
+  .payment-item .top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .payment-item .top-row .amt { color: var(--green); white-space: nowrap; }
+  .payment-item .sub-row {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .empty-list {
+    padding: 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--card);
+    border: 1px solid var(--accent);
+    color: var(--text);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    max-width: 90%;
+    text-align: center;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.error { border-color: var(--danger); }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    overflow-y: auto;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+
+  .modal-box {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 460px;
+    padding: 20px;
+    margin: auto;
+  }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .modal-cancel-btn {
+    padding: 13px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-family: 'Almarai', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .modal-save-btn {
+    padding: 13px;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #0f0f14;
+    font-family: 'Almarai', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .loading-spinner {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="back-btn" id="backBtn" onclick="goBackScreen()">رجوع</button>
+  <h1 id="headerTitle">تكلفة وسعر العمل</h1>
+</div>
+
+<div class="container">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screenHome">
+    <div class="home-buttons">
+      <div class="home-btn" onclick="openNewJob()">
+        <div class="title">عمل جديد</div>
+        <div class="sub">إنشاء عمل جديد وتوليد رمز العمل تلقائياً</div>
+      </div>
+      <div class="home-btn" onclick="openJobsScreen()">
+        <div class="title">قيد العمل</div>
+        <div class="sub">عرض الأعمال الحالية والتنقل بينها</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW JOB SCREEN -->
+  <div class="screen" id="screenNewJob">
+    <div class="card">
+      <div class="field-row">
+        <div class="field-label">رمز العمل</div>
+        <input type="text" class="field-input" id="njJobCode" value="سيتم توليده بعد الحفظ" readonly>
+      </div>
+      <div class="field-row">
+        <div class="field-label">اسم العمل<span class="req">*</span></div>
+        <input type="text" class="field-input" id="njJobName">
+      </div>
+      <div class="field-row">
+        <div class="field-label">اسم الزبون<span class="req">*</span></div>
+        <input type="text" class="field-input" id="njCustomerName" list="customerNameList">
+      </div>
+      <div class="field-row">
+        <div class="field-label">تكلفة العمل<span class="req">*</span></div>
+        <input type="text" inputmode="decimal" class="field-input" id="njJobCost" placeholder="0" oninput="formatInput(this)">
+      </div>
+      <div class="field-row">
+        <div class="field-label">سعر العمل<span class="req">*</span></div>
+        <input type="text" inputmode="decimal" class="field-input" id="njJobPrice" placeholder="0" oninput="formatInput(this)">
+      </div>
+      <div class="field-row">
+        <div class="field-label">تاريخ العمل<span class="req">*</span></div>
+        <input type="date" class="field-input" id="njJobDate">
+      </div>
+      <div class="field-row">
+        <div class="field-label">حالة العمل<span class="req">*</span></div>
+        <select class="field-select" id="njJobStatus"><option value="قيد العمل">قيد العمل</option></select>
+      </div>
+      <div class="field-row">
+        <div class="field-label">ملاحظات</div>
+        <textarea class="field-textarea" id="njNotes"></textarea>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveNewJob()">حفظ</button>
+  </div>
+
+  <!-- JOBS (ONGOING) SCREEN -->
+  <div class="screen" id="screenJobs">
+    <div id="jobsLoading" class="loading-spinner">جارِ تحميل الأعمال...</div>
+    <div id="jobsEmpty" class="empty-state" style="display:none;">لا توجد أعمال مسجلة بعد</div>
+    <div id="jobsContent" style="display:none;">
+      <div class="job-nav">
+        <button class="nav-arrow" id="navPrev" onclick="navigateJob(1)">‹</button>
+        <div class="job-position" id="jobPosition"></div>
+        <button class="nav-arrow" id="navNext" onclick="navigateJob(-1)">›</button>
+      </div>
+      <div id="jobViewWrap">
+        <div class="job-card" id="jobCard" onclick="openEditJob()">
+          <div class="job-field code">
+            <div class="label">رمز العمل</div>
+            <div class="value" id="jvJobCode"></div>
+          </div>
+          <div class="job-field">
+            <div class="label">اسم العمل</div>
+            <div class="value" id="jvJobName"></div>
+          </div>
+          <div class="job-field">
+            <div class="label">اسم الزبون</div>
+            <div class="value" id="jvCustomerName"></div>
+          </div>
+          <div class="job-field">
+            <div class="label">ملاحظات</div>
+            <div class="value" id="jvNotes"></div>
+          </div>
+          <div class="job-field" id="jvCompletedField" style="display:none;">
+            <div class="value completed-text">مكتمل</div>
+          </div>
+        </div>
+
+        <div class="summary-block green-block" id="custSummaryBlock" onclick="openCustomerPaymentPage()">
+          <div id="custSummary">-</div>
+        </div>
+        <div class="summary-block yellow-block" id="vendSummaryBlock" onclick="openVendorPaymentPage()">
+          <div id="vendSummary">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT JOB SCREEN -->
+  <div class="screen" id="screenEditJob">
+    <div class="card">
+      <div class="field-row">
+        <div class="field-label">رمز العمل</div>
+        <input type="text" class="field-input" id="ejJobCode" readonly>
+      </div>
+      <div class="field-row">
+        <div class="field-label">اسم العمل<span class="req">*</span></div>
+        <input type="text" class="field-input" id="ejJobName">
+      </div>
+      <div class="field-row">
+        <div class="field-label">اسم الزبون<span class="req">*</span></div>
+        <input type="text" class="field-input" id="ejCustomerName" list="customerNameList">
+      </div>
+      <div class="field-row">
+        <div class="field-label">تكلفة العمل<span class="req">*</span></div>
+        <input type="text" inputmode="decimal" class="field-input" id="ejJobCost" placeholder="0" oninput="formatInput(this)">
+      </div>
+      <div class="field-row">
+        <div class="field-label">سعر العمل<span class="req">*</span></div>
+        <input type="text" inputmode="decimal" class="field-input" id="ejJobPrice" placeholder="0" oninput="formatInput(this)">
+      </div>
+      <div class="field-row">
+        <div class="field-label">تاريخ العمل<span class="req">*</span></div>
+        <input type="date" class="field-input" id="ejJobDate">
+      </div>
+      <div class="field-row">
+        <div class="field-label">حالة العمل<span class="req">*</span></div>
+        <select class="field-select" id="ejJobStatus"></select>
+      </div>
+      <div class="field-row">
+        <div class="field-label">ملاحظات</div>
+        <textarea class="field-textarea" id="ejNotes"></textarea>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveEditJob()">حفظ التعديلات</button>
+  </div>
+
+</div>
+
+<!-- CUSTOMER PAYMENT SCREEN -->
+<div class="screen" id="screenCustomerPayment" style="max-width:500px;margin:0 auto;padding:20px 16px 60px;">
+  <div class="card">
+    <div class="field-row">
+      <div class="field-label">رمز العمل</div>
+      <input type="text" class="field-input" id="cpJobCode" readonly>
+    </div>
+    <div class="field-row">
+      <div class="field-label">دفعة الزبون<span class="req">*</span></div>
+      <input type="text" inputmode="decimal" class="field-input" id="cpAmount" placeholder="0" oninput="formatInput(this)">
+    </div>
+    <div class="field-row">
+      <div class="field-label">تاريخ الدفعة<span class="req">*</span></div>
+      <input type="date" class="field-input" id="cpDate">
+    </div>
+    <div class="field-row">
+      <div class="field-label">ملاحظات</div>
+      <textarea class="field-textarea" id="cpNotes"></textarea>
+    </div>
+  </div>
+  <button class="btn-customer-pay" id="cpSaveBtn" onclick="saveCustomerPayment()" style="margin-top:8px;">حفظ</button>
+  <button class="btn-secondary" id="cpCancelEditBtn" style="display:none;" onclick="resetCustomerPaymentForm()">إلغاء التعديل</button>
+
+  <div class="section-title">دفعات الزبون</div>
+  <div class="card" id="customerPaymentsList"></div>
+
+  <div class="summary-block green-block" id="cpPageSummary">-</div>
+</div>
+
+<!-- VENDOR PAYMENT SCREEN -->
+<div class="screen" id="screenVendorPayment" style="max-width:500px;margin:0 auto;padding:20px 16px 60px;">
+  <div class="card">
+    <div class="field-row">
+      <div class="field-label">رمز العمل</div>
+      <input type="text" class="field-input" id="vpJobCode" readonly>
+    </div>
+    <div class="field-row">
+      <div class="field-label">اسم المجهز<span class="req">*</span></div>
+      <input type="text" class="field-input" id="vpVendorName" list="vendorNameList">
+      <datalist id="vendorNameList"></datalist>
+    </div>
+    <div class="field-row">
+      <div class="field-label">اسم الخدمة<span class="req">*</span></div>
+      <select class="field-select" id="vpServiceName"></select>
+    </div>
+    <div class="field-row">
+      <div class="field-label">تكلفة الخدمة<span class="req">*</span></div>
+      <input type="text" inputmode="decimal" class="field-input" id="vpServiceCost" placeholder="0" oninput="formatInput(this)">
+    </div>
+    <div class="field-row">
+      <div class="field-label">دفعة الخدمة<span class="req">*</span></div>
+      <input type="text" inputmode="decimal" class="field-input" id="vpServicePayment" placeholder="0" oninput="formatInput(this)">
+    </div>
+    <div class="field-row">
+      <div class="field-label">تاريخ الدفعة<span class="req">*</span></div>
+      <input type="date" class="field-input" id="vpDate">
+    </div>
+    <div class="field-row">
+      <div class="field-label">ملاحظات</div>
+      <textarea class="field-textarea" id="vpNotes"></textarea>
+    </div>
+  </div>
+  <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="margin-top:8px;">حفظ</button>
+  <button class="btn-secondary" id="vpCancelEditBtn" style="display:none;" onclick="resetVendorPaymentForm()">إلغاء التعديل</button>
+
+  <div class="section-title">دفعات المجهزين</div>
+  <div class="card" id="vendorPaymentsList"></div>
+
+  <div class="summary-block yellow-block" id="vpPageSummary">-</div>
+</div>
+
+<datalist id="customerNameList"></datalist>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== CONFIGURATION =====
+  // Replace with the deployed Google Apps Script web app URL.
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9ibSkSipuGX6JuXlJdacE4mXtqHnog7eWNE3oaLwloiJFFuBCbm58wmdyzufhUWJUKA/exec';
+
+  var initData = { services: [], statuses: [] };
+  var jobsList = [];
+  var currentJobIndex = -1;
+
+  function todayISO() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+
+  function formatInput(el) {
+    var raw = el.value.replace(/,/g, '');
+    if (raw === '') return;
+    var parts = raw.split('.');
+    parts[0] = parts[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (parts.length > 1) {
+      parts[1] = parts[1].replace(/\D/g, '');
+      el.value = parts[0] + '.' + parts[1];
+    } else {
+      el.value = parts[0];
+    }
+  }
+
+  function unformatNumber(value) {
+    return String(value || '').replace(/,/g, '').trim();
+  }
+
+  function formatNumber(num) {
+    return Number(num || 0).toLocaleString('en-US');
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function showToast(message, isError) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(function() { toast.className = 'toast'; }, 2600);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    var backBtn = document.getElementById('backBtn');
+    var header = document.querySelector('.header');
+
+    if (id === 'screenCustomerPayment' || id === 'screenVendorPayment') {
+      header.style.display = 'none';
+      return;
+    }
+    header.style.display = '';
+
+    if (id === 'screenHome') {
+      backBtn.classList.remove('show');
+    } else {
+      backBtn.classList.add('show');
+    }
+  }
+
+  var screenStack = ['screenHome'];
+
+  function goToScreen(id) {
+    screenStack.push(id);
+    showScreen(id);
+    history.pushState({ depth: screenStack.length }, '', '');
+  }
+
+  function goBackScreen() {
+    if (screenStack.length > 1) {
+      screenStack.pop();
+    }
+    showScreen(screenStack[screenStack.length - 1]);
+  }
+
+  function goHome() {
+    screenStack = ['screenHome'];
+    showScreen('screenHome');
+  }
+
+  window.addEventListener('popstate', function() {
+    goBackScreen();
+  });
+
+  // ===== INIT DATA (DROPDOWNS) =====
+  function loadInitData() {
+    fetch(SCRIPT_URL + '?action=getInitData')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        initData = data;
+        populateSelect('njJobStatus', data.statuses);
+        populateSelect('vpServiceName', data.services);
+        setDefaultJobStatus();
+      })
+      .catch(function(err) {
+        showToast('تعذر تحميل البيانات الأولية: ' + err.message, true);
+      });
+    loadVendorNames();
+  }
+
+  var vendorNames = [];
+
+  function loadVendorNames() {
+    fetch(SCRIPT_URL + '?action=getVendorNames')
+      .then(function(r) { return r.json(); })
+      .then(function(names) {
+        vendorNames = names || [];
+        populateDatalist('vendorNameList', vendorNames);
+      })
+      .catch(function(err) {});
+  }
+
+  function populateDatalist(id, list) {
+    var dl = document.getElementById(id);
+    if (!dl) return;
+    dl.innerHTML = '';
+    list.forEach(function(name) {
+      var o = document.createElement('option');
+      o.value = name;
+      dl.appendChild(o);
+    });
+  }
+
+  function populateCustomerNameSuggestions() {
+    var seen = {};
+    var names = [];
+    jobsList.forEach(function(j) {
+      var name = (j.customerName || '').trim();
+      if (name && !seen[name]) { seen[name] = true; names.push(name); }
+    });
+    populateDatalist('customerNameList', names);
+  }
+
+  function populateSelect(id, options) {
+    var sel = document.getElementById(id);
+    sel.innerHTML = '';
+    options.forEach(function(opt) {
+      var o = document.createElement('option');
+      o.value = opt;
+      o.textContent = opt;
+      sel.appendChild(o);
+    });
+  }
+
+  function setDefaultJobStatus() {
+    var sel = document.getElementById('njJobStatus');
+    if (!sel || !initData.statuses) return;
+    var match = initData.statuses.indexOf('قيد العمل');
+    sel.value = match >= 0 ? 'قيد العمل' : (initData.statuses[0] || '');
+  }
+
+  // ===== NEW JOB =====
+  function openNewJob() {
+    document.getElementById('njJobCode').value = 'سيتم توليده بعد الحفظ';
+    document.getElementById('njJobName').value = '';
+    document.getElementById('njCustomerName').value = '';
+    document.getElementById('njJobCost').value = '';
+    document.getElementById('njJobPrice').value = '';
+    document.getElementById('njJobDate').value = todayISO();
+    document.getElementById('njNotes').value = '';
+    setDefaultJobStatus();
+    goToScreen('screenNewJob');
+  }
+
+  function saveNewJob() {
+    var jobName = document.getElementById('njJobName').value.trim();
+    var customerName = document.getElementById('njCustomerName').value.trim();
+    var jobCost = unformatNumber(document.getElementById('njJobCost').value);
+    var jobPrice = unformatNumber(document.getElementById('njJobPrice').value);
+    var jobDate = document.getElementById('njJobDate').value;
+    var jobStatus = document.getElementById('njJobStatus').value;
+    var notes = document.getElementById('njNotes').value.trim();
+
+    if (!jobName || !customerName || !jobCost || !jobPrice || !jobDate || !jobStatus) {
+      showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    var payload = {
+      action: 'createJob',
+      job: {
+        jobName: jobName,
+        customerName: customerName,
+        jobCost: jobCost,
+        jobPrice: jobPrice,
+        jobDate: jobDate,
+        jobStatus: jobStatus,
+        notes: notes
+      }
+    };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تم حفظ العمل برمز ' + res.jobCode);
+          screenStack[screenStack.length - 1] = 'screenJobs';
+          showScreen('screenJobs');
+          loadJobsAndShow(res.jobCode);
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  // ===== JOBS (ONGOING) =====
+  function openJobsScreen() {
+    goToScreen('screenJobs');
+    document.getElementById('jobsLoading').style.display = 'block';
+    document.getElementById('jobsEmpty').style.display = 'none';
+    document.getElementById('jobsContent').style.display = 'none';
+    loadJobsAndShow();
+  }
+
+  function loadJobsAndShow(focusJobCode) {
+    fetch(SCRIPT_URL + '?action=getJobs')
+      .then(function(r) { return r.json(); })
+      .then(function(jobs) {
+        jobsList = jobs || [];
+        document.getElementById('jobsLoading').style.display = 'none';
+
+        if (jobsList.length === 0) {
+          document.getElementById('jobsEmpty').style.display = 'block';
+          document.getElementById('jobsContent').style.display = 'none';
+          return;
+        }
+
+        if (focusJobCode) {
+          var idx = jobsList.findIndex(function(j) { return j.jobCode === focusJobCode; });
+          currentJobIndex = idx >= 0 ? idx : jobsList.length - 1;
+        } else {
+          var activeIdx = -1;
+          for (var i = jobsList.length - 1; i >= 0; i--) {
+            if (jobsList[i].jobStatus === 'قيد العمل') { activeIdx = i; break; }
+          }
+          currentJobIndex = activeIdx >= 0 ? activeIdx : jobsList.length - 1;
+        }
+
+        populateCustomerNameSuggestions();
+        document.getElementById('jobsContent').style.display = 'block';
+        renderCurrentJob();
+      })
+      .catch(function(err) {
+        document.getElementById('jobsLoading').style.display = 'none';
+        showToast('تعذر تحميل الأعمال', true);
+      });
+  }
+
+  var currentViewedJob = null;
+
+  function renderCurrentJob() {
+    if (currentJobIndex < 0 || currentJobIndex >= jobsList.length) return;
+    var job = jobsList[currentJobIndex];
+    currentViewedJob = job;
+
+    document.getElementById('jvJobCode').textContent = job.jobCode;
+    document.getElementById('jvJobName').textContent = job.jobName || '-';
+    document.getElementById('jvCustomerName').textContent = job.customerName || '-';
+    document.getElementById('jvNotes').textContent = job.notes || '-';
+    document.getElementById('jvCompletedField').style.display = (job.jobStatus === 'مكتمل') ? 'block' : 'none';
+
+    document.getElementById('jobPosition').textContent = (currentJobIndex + 1) + ' / ' + jobsList.length;
+    document.getElementById('navPrev').disabled = currentJobIndex <= 0;
+    document.getElementById('navNext').disabled = currentJobIndex >= jobsList.length - 1;
+
+    loadJobPaymentsAndSummary(job.jobCode, job.jobPrice, job.jobCost);
+  }
+
+  var currentCustomerPayments = [];
+  var currentVendorPayments = [];
+
+  function loadJobPaymentsAndSummary(jobCode, jobPrice, jobCost) {
+    fetch(SCRIPT_URL + '?action=getJobDetail&jobCode=' + encodeURIComponent(jobCode))
+      .then(function(r) { return r.json(); })
+      .then(function(detail) {
+        currentCustomerPayments = detail.customerPayments || [];
+        currentVendorPayments = detail.vendorPayments || [];
+        renderPaymentSummary(detail, jobPrice, jobCost);
+        renderPaymentLists(detail);
+      })
+      .catch(function(err) {
+        showToast('تعذر تحميل الدفعات: ' + err.message, true);
+      });
+  }
+
+  function renderPaymentSummary(detail, jobPrice, jobCost) {
+    var custPaid = 0;
+    (detail.customerPayments || []).forEach(function(p) { custPaid += Number(p.payment) || 0; });
+    var vendPaid = 0;
+    (detail.vendorPayments || []).forEach(function(p) { vendPaid += Number(p.servicePayment) || 0; });
+
+    var custRemaining = (Number(jobPrice) || 0) - custPaid;
+    var vendRemaining = (Number(jobCost) || 0) - vendPaid;
+
+    var custText = 'مدفوع ' + formatNumber(custPaid) + ' — متبقي ' + formatNumber(custRemaining);
+    var vendText = 'مدفوع ' + formatNumber(vendPaid) + ' — متبقي ' + formatNumber(vendRemaining);
+
+    setTextIfExists('custSummary', custText);
+    setTextIfExists('cpPageSummary', custText);
+    setTextIfExists('vendSummary', vendText);
+    setTextIfExists('vpPageSummary', vendText);
+  }
+
+  function setTextIfExists(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function renderPaymentLists(detail) {
+    var custList = document.getElementById('customerPaymentsList');
+    var custPayments = detail.customerPayments || [];
+    if (custPayments.length === 0) {
+      custList.innerHTML = '<div class="empty-list">لا توجد دفعات مسجلة</div>';
+    } else {
+      custList.innerHTML = custPayments.map(function(p, idx) {
+        return '<div class="payment-item" onclick="selectCustomerPaymentForEdit(' + idx + ')">' +
+          '<div class="top-row"><span>' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
+          (p.notes ? '<div class="sub-row">' + escapeHtml(p.notes) + '</div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    var vendList = document.getElementById('vendorPaymentsList');
+    var vendPayments = detail.vendorPayments || [];
+    if (vendPayments.length === 0) {
+      vendList.innerHTML = '<div class="empty-list">لا توجد دفعات مسجلة</div>';
+    } else {
+      vendList.innerHTML = vendPayments.map(function(p, idx) {
+        return '<div class="payment-item" onclick="selectVendorPaymentForEdit(' + idx + ')">' +
+          '<div class="top-row"><span>' + escapeHtml(p.vendorName) + ' — ' + escapeHtml(p.serviceName) + '</span><span class="amt">' + formatNumber(p.servicePayment) + '</span></div>' +
+          '<div class="sub-row">' + escapeHtml(p.paymentDate) + (p.notes ? ' — ' + escapeHtml(p.notes) : '') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+  }
+
+  function openEditJob() {
+    if (currentJobIndex < 0) return;
+    var job = jobsList[currentJobIndex];
+    document.getElementById('ejJobCode').value = job.jobCode;
+    document.getElementById('ejJobName').value = job.jobName || '';
+    document.getElementById('ejCustomerName').value = job.customerName || '';
+    document.getElementById('ejJobCost').value = formatNumber(job.jobCost);
+    document.getElementById('ejJobPrice').value = formatNumber(job.jobPrice);
+    document.getElementById('ejJobDate').value = job.jobDate || '';
+    document.getElementById('ejNotes').value = job.notes || '';
+    populateSelect('ejJobStatus', initData.statuses || []);
+    document.getElementById('ejJobStatus').value = job.jobStatus || '';
+    goToScreen('screenEditJob');
+  }
+
+  function saveEditJob() {
+    var jobCode = document.getElementById('ejJobCode').value;
+    var jobName = document.getElementById('ejJobName').value.trim();
+    var customerName = document.getElementById('ejCustomerName').value.trim();
+    var jobCost = unformatNumber(document.getElementById('ejJobCost').value);
+    var jobPrice = unformatNumber(document.getElementById('ejJobPrice').value);
+    var jobDate = document.getElementById('ejJobDate').value;
+    var jobStatus = document.getElementById('ejJobStatus').value;
+    var notes = document.getElementById('ejNotes').value.trim();
+
+    if (!jobName || !customerName || !jobCost || !jobPrice || !jobDate || !jobStatus) {
+      showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    var payload = {
+      action: 'updateJob',
+      job: {
+        jobCode: jobCode,
+        jobName: jobName,
+        customerName: customerName,
+        jobCost: jobCost,
+        jobPrice: jobPrice,
+        jobDate: jobDate,
+        jobStatus: jobStatus,
+        notes: notes
+      }
+    };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تم حفظ التعديلات');
+          screenStack[screenStack.length - 1] = 'screenJobs';
+          showScreen('screenJobs');
+          loadJobsAndShow(jobCode);
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  // navigateJob(1) = go to older job (previous), navigateJob(-1) = go to newer job (next)
+  function navigateJob(direction) {
+    var newIndex = currentJobIndex - direction;
+    if (newIndex < 0 || newIndex >= jobsList.length) return;
+    animateJobChange(newIndex, direction);
+  }
+
+  function animateJobChange(newIndex, direction) {
+    var wrap = document.getElementById('jobViewWrap');
+    if (!wrap) {
+      currentJobIndex = newIndex;
+      renderCurrentJob();
+      return;
+    }
+
+    var outClass = direction === 1 ? 'anim-out-left' : 'anim-out-right';
+    var inPrepClass = direction === 1 ? 'anim-in-prep-right' : 'anim-in-prep-left';
+
+    wrap.classList.add(outClass);
+
+    setTimeout(function() {
+      currentJobIndex = newIndex;
+      renderCurrentJob();
+
+      wrap.classList.remove(outClass);
+      wrap.classList.add(inPrepClass);
+      void wrap.offsetWidth;
+      wrap.classList.remove(inPrepClass);
+    }, 180);
+  }
+
+  // Swipe gesture support (works anywhere on the Jobs screen, not just over the card)
+  (function() {
+    var startX = 0;
+    var startY = 0;
+    var tracking = false;
+
+    document.addEventListener('touchstart', function(e) {
+      var jobsScreen = document.getElementById('screenJobs');
+      if (!jobsScreen || !jobsScreen.classList.contains('active')) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      tracking = true;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      if (!tracking) return;
+      tracking = false;
+      var endX = e.changedTouches[0].clientX;
+      var endY = e.changedTouches[0].clientY;
+      var diffX = endX - startX;
+      var diffY = endY - startY;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          // swipe right (RTL: reveals next/newer)
+          navigateJob(-1);
+        } else {
+          // swipe left (RTL: reveals previous/older)
+          navigateJob(1);
+        }
+      }
+    }, { passive: true });
+  })();
+
+  // ===== CUSTOMER PAYMENT PAGE =====
+  var editingCustomerRow = null;
+
+  function openCustomerPaymentPage() {
+    if (currentJobIndex < 0) return;
+    var job = jobsList[currentJobIndex];
+    document.getElementById('cpJobCode').value = job.jobCode;
+    resetCustomerPaymentForm();
+    goToScreen('screenCustomerPayment');
+  }
+
+  function resetCustomerPaymentForm() {
+    editingCustomerRow = null;
+    document.getElementById('cpAmount').value = '';
+    document.getElementById('cpDate').value = todayISO();
+    document.getElementById('cpNotes').value = '';
+    document.getElementById('cpSaveBtn').textContent = 'حفظ';
+    document.getElementById('cpCancelEditBtn').style.display = 'none';
+  }
+
+  function selectCustomerPaymentForEdit(idx) {
+    var p = currentCustomerPayments[idx];
+    if (!p) return;
+    editingCustomerRow = p.rowIndex;
+    document.getElementById('cpAmount').value = formatNumber(p.payment);
+    document.getElementById('cpDate').value = p.paymentDate;
+    document.getElementById('cpNotes').value = p.notes || '';
+    document.getElementById('cpSaveBtn').textContent = 'حفظ التعديل';
+    document.getElementById('cpCancelEditBtn').style.display = 'block';
+  }
+
+  function saveCustomerPayment() {
+    var jobCode = document.getElementById('cpJobCode').value;
+    var amount = unformatNumber(document.getElementById('cpAmount').value);
+    var date = document.getElementById('cpDate').value;
+    var notes = document.getElementById('cpNotes').value.trim();
+
+    if (!amount || !date) {
+      showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    var payload;
+    if (editingCustomerRow) {
+      payload = {
+        action: 'updateCustomerPayment',
+        payment: { rowIndex: editingCustomerRow, jobCode: jobCode, payment: amount, paymentDate: date, notes: notes }
+      };
+    } else {
+      payload = {
+        action: 'addCustomerPayment',
+        payment: { jobCode: jobCode, payment: amount, paymentDate: date, notes: notes }
+      };
+    }
+
+    var wasEditing = !!editingCustomerRow;
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة الزبون');
+          resetCustomerPaymentForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  // ===== VENDOR PAYMENT PAGE =====
+  var editingVendorRow = null;
+
+  function openVendorPaymentPage() {
+    if (currentJobIndex < 0) return;
+    var job = jobsList[currentJobIndex];
+    document.getElementById('vpJobCode').value = job.jobCode;
+    resetVendorPaymentForm();
+    goToScreen('screenVendorPayment');
+  }
+
+  function resetVendorPaymentForm() {
+    editingVendorRow = null;
+    document.getElementById('vpVendorName').value = '';
+    document.getElementById('vpServiceCost').value = '';
+    document.getElementById('vpServicePayment').value = '';
+    document.getElementById('vpDate').value = todayISO();
+    document.getElementById('vpNotes').value = '';
+    if (initData.services && initData.services.length) {
+      document.getElementById('vpServiceName').value = initData.services[0];
+    }
+    document.getElementById('vpSaveBtn').textContent = 'حفظ';
+    document.getElementById('vpCancelEditBtn').style.display = 'none';
+  }
+
+  function selectVendorPaymentForEdit(idx) {
+    var p = currentVendorPayments[idx];
+    if (!p) return;
+    editingVendorRow = p.rowIndex;
+    document.getElementById('vpVendorName').value = p.vendorName || '';
+    document.getElementById('vpServiceName').value = p.serviceName || '';
+    document.getElementById('vpServiceCost').value = formatNumber(p.serviceCost);
+    document.getElementById('vpServicePayment').value = formatNumber(p.servicePayment);
+    document.getElementById('vpDate').value = p.paymentDate;
+    document.getElementById('vpNotes').value = p.notes || '';
+    document.getElementById('vpSaveBtn').textContent = 'حفظ التعديل';
+    document.getElementById('vpCancelEditBtn').style.display = 'block';
+  }
+
+  function saveVendorPayment() {
+    var jobCode = document.getElementById('vpJobCode').value;
+    var vendorName = document.getElementById('vpVendorName').value.trim();
+    var serviceName = document.getElementById('vpServiceName').value;
+    var serviceCost = unformatNumber(document.getElementById('vpServiceCost').value);
+    var servicePayment = unformatNumber(document.getElementById('vpServicePayment').value);
+    var date = document.getElementById('vpDate').value;
+    var notes = document.getElementById('vpNotes').value.trim();
+
+    if (!vendorName || !serviceName || !serviceCost || !servicePayment || !date) {
+      showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    var payload;
+    if (editingVendorRow) {
+      payload = {
+        action: 'updateVendorPayment',
+        payment: {
+          rowIndex: editingVendorRow,
+          jobCode: jobCode,
+          vendorName: vendorName,
+          serviceName: serviceName,
+          serviceCost: serviceCost,
+          servicePayment: servicePayment,
+          paymentDate: date,
+          notes: notes
+        }
+      };
+    } else {
+      payload = {
+        action: 'addVendorPayment',
+        payment: {
+          jobCode: jobCode,
+          vendorName: vendorName,
+          serviceName: serviceName,
+          serviceCost: serviceCost,
+          servicePayment: servicePayment,
+          paymentDate: date,
+          notes: notes
+        }
+      };
+    }
+
+    var wasEditing = !!editingVendorRow;
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة المجهز');
+          resetVendorPaymentForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+          loadVendorNames();
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  // ===== INIT =====
+  history.replaceState({ depth: 1 }, '', '');
+  loadInitData();
+</script>
+
+</body>
+</html>
