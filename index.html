@@ -408,6 +408,7 @@
     color: var(--text);
   }
   .payment-item .top-row .amt { color: var(--green); white-space: nowrap; }
+  .payment-item .top-row .amt.amt-orange { color: #ff8c42; }
   .payment-item .sub-row {
     font-size: 12px;
     color: var(--muted);
@@ -1571,8 +1572,7 @@
       html += keys.map(function(k) {
         var g = groups[k];
         return '<div class="payment-item" onclick="selectVendorForPayment(\'' + escapeAttr(g.vendorName) + '\',\'' + escapeAttr(g.serviceName) + '\')">' +
-          '<div class="top-row"><span>' + escapeHtml(g.vendorName) + ' — ' + escapeHtml(g.serviceName) + '</span></div>' +
-          '<div class="sub-row">' + formatNumberAr(g.totalPaid) + ' من ' + formatNumberAr(g.totalCost) + '</div>' +
+          '<div class="top-row"><span>' + escapeHtml(g.vendorName) + ' — ' + escapeHtml(g.serviceName) + '</span><span class="amt amt-orange">' + formatNumberAr(g.totalPaid) + ' من ' + formatNumberAr(g.totalCost) + '</span></div>' +
           '</div>';
       }).join('');
     }
