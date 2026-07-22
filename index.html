@@ -260,10 +260,18 @@
     user-select: none;
   }
   .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  @media (max-width: 600px) {
+    .job-nav { display: none; }
+  }
+  .job-field.code {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
   .job-position {
-    font-size: 13px;
+    font-size: 22px;
     color: var(--muted);
-    font-weight: 700;
+    font-weight: 400;
   }
 
   .job-card {
@@ -300,6 +308,11 @@
   .summary-block.yellow-block {
     background: linear-gradient(135deg, var(--accent), var(--gold));
     color: #2b2000;
+  }
+  .summary-block.neutral-block {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    color: var(--accent);
   }
   .summary-block .field-label {
     color: inherit;
@@ -405,6 +418,12 @@
     text-align: center;
     color: var(--muted);
     font-size: 13px;
+  }
+
+  .ltr-text {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
   }
 
   .empty-state {
@@ -526,7 +545,7 @@
         <div class="sub">إنشاء عمل جديد وتوليد رمز العمل تلقائياً</div>
       </div>
       <div class="home-btn" onclick="openJobsScreen()">
-        <div class="title">قيد العمل</div>
+        <div class="title">قيد الانجاز</div>
         <div class="sub">عرض الأعمال الحالية والتنقل بينها</div>
       </div>
     </div>
@@ -561,7 +580,7 @@
       </div>
       <div class="field-row">
         <div class="field-label">حالة العمل<span class="req">*</span></div>
-        <select class="field-select" id="njJobStatus"><option value="قيد العمل">قيد العمل</option></select>
+        <select class="field-select" id="njJobStatus"><option value="قيد الانجاز">قيد الانجاز</option></select>
       </div>
       <div class="field-row">
         <div class="field-label">ملاحظات</div>
@@ -578,14 +597,16 @@
     <div id="jobsContent" style="display:none;">
       <div class="job-nav">
         <button class="nav-arrow" id="navPrev" onclick="navigateJob(1)">‹</button>
-        <div class="job-position" id="jobPosition"></div>
         <button class="nav-arrow" id="navNext" onclick="navigateJob(-1)">›</button>
       </div>
       <div id="jobViewWrap">
         <div class="job-card" id="jobCard" onclick="openEditJob()">
           <div class="job-field code">
-            <div class="label">رمز العمل</div>
-            <div class="value" id="jvJobCode"></div>
+            <div class="code-text">
+              <div class="label">رمز العمل</div>
+              <div class="value" id="jvJobCode"></div>
+            </div>
+            <div class="job-position" id="jobPosition"></div>
           </div>
           <div class="job-field">
             <div class="label">اسم العمل</div>
@@ -612,6 +633,7 @@
           <div class="field-label">للمجهزين</div>
           <div id="vendSummary">-</div>
         </div>
+        <div class="summary-block neutral-block" id="addVendorBlock" onclick="openAddVendorPage()">اضافة مجهز</div>
       </div>
     </div>
   </div>
@@ -655,6 +677,50 @@
     <button class="btn-primary" onclick="saveEditJob()">حفظ التعديلات</button>
   </div>
 
+  <!-- ADD VENDOR SCREEN -->
+  <div class="screen" id="screenAddVendor">
+    <div class="card">
+      <div class="field-row">
+        <div class="field-label">رمز العمل</div>
+        <input type="text" class="field-input" id="avJobCode" readonly>
+      </div>
+      <div class="field-row">
+        <div class="field-label">نوع الخدمة<span class="req">*</span></div>
+        <select class="field-select" id="avServiceName"></select>
+      </div>
+      <div class="field-row">
+        <div class="field-label">اسم المجهز<span class="req">*</span></div>
+        <select class="field-select" id="avVendorName" onchange="handleVendorNameSelectChange()"></select>
+      </div>
+      <div class="field-row">
+        <div class="field-label">كلفة الخدمة<span class="req">*</span></div>
+        <input type="text" inputmode="decimal" class="field-input" id="avServiceCost" placeholder="0" oninput="formatInput(this)">
+      </div>
+      <div class="field-row">
+        <div class="field-label">ملاحظات</div>
+        <textarea class="field-textarea" id="avNotes"></textarea>
+      </div>
+    </div>
+    <button class="btn-vendor-pay" onclick="saveAddVendorRoster()" style="margin-top:8px;">اضافة</button>
+  </div>
+
+</div>
+
+<!-- NEW VENDOR MODAL -->
+<div class="modal-overlay" id="newVendorModal">
+  <div class="modal-box">
+    <div class="modal-title">مجهز جديد</div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="field-row">
+        <div class="field-label">اسم المجهز<span class="req">*</span></div>
+        <input type="text" class="field-input" id="newVendorNameInput">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel-btn" onclick="cancelNewVendorModal()">إلغاء</button>
+      <button class="modal-save-btn" onclick="saveNewVendorName()">حفظ</button>
+    </div>
+  </div>
 </div>
 
 <!-- CUSTOMER PAYMENT SCREEN -->
@@ -679,6 +745,7 @@
   </div>
   <button class="btn-customer-pay" id="cpSaveBtn" onclick="saveCustomerPayment()" style="margin-top:8px;">حفظ</button>
   <button class="btn-secondary" id="cpCancelEditBtn" style="display:none;" onclick="resetCustomerPaymentForm()">إلغاء التعديل</button>
+  <button class="btn-secondary" id="cpDeleteBtn" style="display:none;" onclick="deleteCustomerPaymentConfirm()">حذف</button>
 
   <div class="section-title">دفعات الزبون</div>
   <div class="card" id="customerPaymentsList"></div>
@@ -688,23 +755,19 @@
 
 <!-- VENDOR PAYMENT SCREEN -->
 <div class="screen" id="screenVendorPayment" style="max-width:500px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px 60px;">
-  <div class="card">
-    <div class="field-row">
-      <div class="field-label">رمز العمل</div>
-      <input type="text" class="field-input" id="vpJobCode" readonly>
-    </div>
-    <div class="field-row">
-      <div class="field-label">اسم المجهز<span class="req">*</span></div>
-      <input type="text" class="field-input" id="vpVendorName" list="vendorNameList">
-      <datalist id="vendorNameList"></datalist>
-    </div>
-    <div class="field-row">
-      <div class="field-label">اسم الخدمة<span class="req">*</span></div>
-      <select class="field-select" id="vpServiceName"></select>
-    </div>
-    <div class="field-row">
-      <div class="field-label">تكلفة الخدمة<span class="req">*</span></div>
-      <input type="text" inputmode="decimal" class="field-input" id="vpServiceCost" placeholder="0" oninput="formatInput(this)">
+  <input type="hidden" id="vpJobCode">
+  <input type="hidden" id="vpVendorName">
+  <input type="hidden" id="vpServiceName">
+  <input type="hidden" id="vpServiceCost">
+  <input type="hidden" id="vpRosterRowIndex">
+
+  <div class="section-title">اختر المجهز</div>
+  <div class="card" id="vendorIconsList"></div>
+
+  <div class="card" id="vendorPayEntryCard" style="display:none;">
+    <div class="field-row" id="vpRequiredRow" style="display:none;">
+      <div class="field-label">كلفة الخدمة</div>
+      <div class="value" id="vpRequiredTotal">-</div>
     </div>
     <div class="field-row">
       <div class="field-label">دفعة الخدمة<span class="req">*</span></div>
@@ -719,8 +782,10 @@
       <textarea class="field-textarea" id="vpNotes"></textarea>
     </div>
   </div>
-  <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="margin-top:8px;">حفظ</button>
-  <button class="btn-secondary" id="vpCancelEditBtn" style="display:none;" onclick="resetVendorPaymentForm()">إلغاء التعديل</button>
+  <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="margin-top:8px;display:none;">حفظ</button>
+  <button class="btn-secondary" id="vpCancelEditBtn" style="display:none;" onclick="resetVendorPaymentForm()">إلغاء</button>
+  <button class="btn-secondary" id="vpDeletePaymentBtn" style="display:none;" onclick="deleteVendorPaymentConfirm()">حذف الدفعة</button>
+  <button class="btn-secondary" id="vpDeleteVendorBtn" style="display:none;" onclick="deleteVendorRosterConfirm()">حذف المجهز</button>
 
   <div class="section-title">دفعات المجهزين</div>
   <div class="card" id="vendorPaymentsList"></div>
@@ -765,14 +830,28 @@
     return String(value || '').replace(/,/g, '').trim();
   }
 
+  function toDashDate(value) {
+    var str = String(value || '').trim();
+    if (!str) return '';
+    return str.replace(/\//g, '-');
+  }
+
   function formatNumber(num) {
     return Number(num || 0).toLocaleString('en-US');
+  }
+
+  function formatNumberAr(num) {
+    return formatNumber(num).replace(/,/g, '،');
   }
 
   function escapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = str || '';
     return div.innerHTML;
+  }
+
+  function escapeAttr(str) {
+    return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   }
 
   function showToast(message, isError) {
@@ -794,8 +873,13 @@
       container.style.display = 'none';
       return;
     }
-    header.style.display = '';
     container.style.display = '';
+
+    if (id === 'screenJobs') {
+      header.style.display = 'none';
+      return;
+    }
+    header.style.display = '';
 
     if (id === 'screenHome') {
       backBtn.classList.remove('show');
@@ -835,7 +919,7 @@
       .then(function(data) {
         initData = data;
         populateSelect('njJobStatus', data.statuses);
-        populateSelect('vpServiceName', data.services);
+        populateSelect('avServiceName', data.services);
         setDefaultJobStatus();
       })
       .catch(function(err) {
@@ -851,9 +935,74 @@
       .then(function(r) { return r.json(); })
       .then(function(names) {
         vendorNames = names || [];
-        populateDatalist('vendorNameList', vendorNames);
+        populateVendorNameSelect();
       })
       .catch(function(err) {});
+  }
+
+  function populateVendorNameSelect() {
+    var sel = document.getElementById('avVendorName');
+    if (!sel) return;
+    var currentValue = sel.value;
+    sel.innerHTML = '';
+    vendorNames.forEach(function(name) {
+      var o = document.createElement('option');
+      o.value = name;
+      o.textContent = name;
+      sel.appendChild(o);
+    });
+    var newOpt = document.createElement('option');
+    newOpt.value = '__new_vendor__';
+    newOpt.textContent = 'مجهز جديد';
+    sel.appendChild(newOpt);
+
+    if (vendorNames.indexOf(currentValue) >= 0) {
+      sel.value = currentValue;
+    } else if (vendorNames.length > 0) {
+      sel.value = vendorNames[0];
+    }
+  }
+
+  function handleVendorNameSelectChange() {
+    var sel = document.getElementById('avVendorName');
+    if (sel.value === '__new_vendor__') {
+      openNewVendorModal();
+    }
+  }
+
+  function openNewVendorModal() {
+    document.getElementById('newVendorNameInput').value = '';
+    document.getElementById('newVendorModal').classList.add('open');
+  }
+
+  function cancelNewVendorModal() {
+    document.getElementById('newVendorModal').classList.remove('open');
+    populateVendorNameSelect();
+  }
+
+  function saveNewVendorName() {
+    var name = document.getElementById('newVendorNameInput').value.trim();
+    if (!name) {
+      showToast('الرجاء إدخال اسم المجهز', true);
+      return;
+    }
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addVendorName', name: name }) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          if (vendorNames.indexOf(name) === -1) vendorNames.push(name);
+          populateVendorNameSelect();
+          document.getElementById('avVendorName').value = name;
+          document.getElementById('newVendorModal').classList.remove('open');
+          showToast('تمت إضافة المجهز إلى القائمة');
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
   }
 
   function populateDatalist(id, list) {
@@ -891,8 +1040,8 @@
   function setDefaultJobStatus() {
     var sel = document.getElementById('njJobStatus');
     if (!sel || !initData.statuses) return;
-    var match = initData.statuses.indexOf('قيد العمل');
-    sel.value = match >= 0 ? 'قيد العمل' : (initData.statuses[0] || '');
+    var match = initData.statuses.indexOf('قيد الانجاز');
+    sel.value = match >= 0 ? 'قيد الانجاز' : (initData.statuses[0] || '');
   }
 
   // ===== NEW JOB =====
@@ -980,7 +1129,7 @@
         } else {
           var activeIdx = -1;
           for (var i = jobsList.length - 1; i >= 0; i--) {
-            if (jobsList[i].jobStatus === 'قيد العمل') { activeIdx = i; break; }
+            if (jobsList[i].jobStatus === 'قيد الانجاز') { activeIdx = i; break; }
           }
           currentJobIndex = activeIdx >= 0 ? activeIdx : jobsList.length - 1;
         }
@@ -1026,6 +1175,7 @@
         currentVendorPayments = detail.vendorPayments || [];
         renderPaymentSummary(detail, jobPrice, jobCost);
         renderPaymentLists(detail);
+        renderVendorIconsList();
       })
       .catch(function(err) {
         showToast('تعذر تحميل الدفعات: ' + err.message, true);
@@ -1063,7 +1213,7 @@
     } else {
       custList.innerHTML = custPayments.map(function(p, idx) {
         return '<div class="payment-item" onclick="selectCustomerPaymentForEdit(' + idx + ')">' +
-          '<div class="top-row"><span>' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
+          '<div class="top-row"><span class="ltr-text">' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
           (p.notes ? '<div class="sub-row">' + escapeHtml(p.notes) + '</div>' : '') +
           '</div>';
       }).join('');
@@ -1071,16 +1221,14 @@
 
     var vendList = document.getElementById('vendorPaymentsList');
     var vendPayments = detail.vendorPayments || [];
-    if (vendPayments.length === 0) {
-      vendList.innerHTML = '<div class="empty-list">لا توجد دفعات مسجلة</div>';
-    } else {
-      vendList.innerHTML = vendPayments.map(function(p, idx) {
-        return '<div class="payment-item" onclick="selectVendorPaymentForEdit(' + idx + ')">' +
-          '<div class="top-row"><span>' + escapeHtml(p.vendorName) + ' — ' + escapeHtml(p.serviceName) + '</span><span class="amt">' + formatNumber(p.servicePayment) + '</span></div>' +
-          '<div class="sub-row">' + escapeHtml(p.paymentDate) + (p.notes ? ' — ' + escapeHtml(p.notes) : '') + '</div>' +
-          '</div>';
-      }).join('');
-    }
+    var vendHtml = vendPayments.map(function(p, idx) {
+      if (!(Number(p.servicePayment) > 0)) return '';
+      return '<div class="payment-item" onclick="selectVendorPaymentForEdit(' + idx + ')">' +
+        '<div class="top-row"><span>' + escapeHtml(p.vendorName) + ' — ' + escapeHtml(p.serviceName) + '</span><span class="amt">' + formatNumber(p.servicePayment) + '</span></div>' +
+        '<div class="sub-row"><span class="ltr-text">' + escapeHtml(p.paymentDate) + '</span>' + (p.notes ? ' — ' + escapeHtml(p.notes) : '') + '</div>' +
+        '</div>';
+    }).filter(function(h) { return h; }).join('');
+    vendList.innerHTML = vendHtml || '<div class="empty-list">لا توجد دفعات مسجلة</div>';
   }
 
   function openEditJob() {
@@ -1091,7 +1239,7 @@
     document.getElementById('ejCustomerName').value = job.customerName || '';
     document.getElementById('ejJobCost').value = formatNumber(job.jobCost);
     document.getElementById('ejJobPrice').value = formatNumber(job.jobPrice);
-    document.getElementById('ejJobDate').value = job.jobDate || '';
+    document.getElementById('ejJobDate').value = toDashDate(job.jobDate);
     document.getElementById('ejNotes').value = job.notes || '';
     populateSelect('ejJobStatus', initData.statuses || []);
     document.getElementById('ejJobStatus').value = job.jobStatus || '';
@@ -1227,6 +1375,7 @@
     document.getElementById('cpNotes').value = '';
     document.getElementById('cpSaveBtn').textContent = 'حفظ';
     document.getElementById('cpCancelEditBtn').style.display = 'none';
+    document.getElementById('cpDeleteBtn').style.display = 'none';
   }
 
   function selectCustomerPaymentForEdit(idx) {
@@ -1234,10 +1383,36 @@
     if (!p) return;
     editingCustomerRow = p.rowIndex;
     document.getElementById('cpAmount').value = formatNumber(p.payment);
-    document.getElementById('cpDate').value = p.paymentDate;
+    document.getElementById('cpDate').value = toDashDate(p.paymentDate);
     document.getElementById('cpNotes').value = p.notes || '';
     document.getElementById('cpSaveBtn').textContent = 'حفظ التعديل';
     document.getElementById('cpCancelEditBtn').style.display = 'block';
+    document.getElementById('cpDeleteBtn').style.display = 'block';
+  }
+
+  function deleteCustomerPaymentConfirm() {
+    if (!editingCustomerRow) return;
+    if (!confirm('هل أنت متأكد من حذف هذه الدفعة؟')) return;
+
+    var jobCode = document.getElementById('cpJobCode').value;
+    var payload = { action: 'deleteCustomerPayment', payment: { rowIndex: editingCustomerRow, jobCode: jobCode } };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تم حذف الدفعة');
+          resetCustomerPaymentForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
   }
 
   function saveCustomerPayment() {
@@ -1248,6 +1423,11 @@
 
     if (!amount || !date) {
       showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    if (parseFloat(amount) <= 0) {
+      showToast('يجب أن تكون قيمة الدفعة أكبر من صفر', true);
       return;
     }
 
@@ -1295,18 +1475,180 @@
     goToScreen('screenVendorPayment');
   }
 
-  function resetVendorPaymentForm() {
+  function openAddVendorPage() {
+    if (currentJobIndex < 0) return;
+    var job = jobsList[currentJobIndex];
+    document.getElementById('vpJobCode').value = job.jobCode;
+    resetVendorPaymentForm();
+    document.getElementById('avJobCode').value = job.jobCode;
+    populateSelect('avServiceName', initData.services || []);
+    resetAddVendorForm();
+    goToScreen('screenVendorPayment');
+    goToScreen('screenAddVendor');
+  }
+
+  function resetAddVendorForm() {
+    document.getElementById('avServiceCost').value = '';
+    document.getElementById('avNotes').value = '';
+    if (initData.services && initData.services.length) {
+      document.getElementById('avServiceName').value = initData.services[0];
+    }
+    populateVendorNameSelect();
+  }
+
+  function saveAddVendorRoster() {
+    var jobCode = document.getElementById('avJobCode').value;
+    var serviceName = document.getElementById('avServiceName').value;
+    var vendorName = document.getElementById('avVendorName').value;
+    var serviceCost = unformatNumber(document.getElementById('avServiceCost').value);
+    var notes = document.getElementById('avNotes').value.trim();
+
+    if (!serviceName || !vendorName || vendorName === '__new_vendor__' || !serviceCost) {
+      showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    var jobDate = currentViewedJob ? currentViewedJob.jobDate : '';
+
+    var payload = {
+      action: 'addVendorRoster',
+      payment: { jobCode: jobCode, vendorName: vendorName, serviceName: serviceName, serviceCost: serviceCost, notes: notes, jobDate: jobDate }
+    };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تمت إضافة المجهز');
+          resetAddVendorForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  // Groups all Vendor_Info rows for this job by vendor+service. Cost is NOT summed across rows
+  // (every row for a given vendor+service carries the same fixed cost) - only payments are summed.
+  function computeVendorGroups() {
+    var groups = {};
+    currentVendorPayments.forEach(function(p) {
+      var vn = (p.vendorName || '').trim();
+      var sn = (p.serviceName || '').trim();
+      if (!vn) return;
+      var key = vn + '||' + sn;
+      if (!groups[key]) {
+        groups[key] = { vendorName: vn, serviceName: sn, totalCost: 0, totalPaid: 0, rosterRowIndex: null };
+      }
+      var cost = Number(p.serviceCost) || 0;
+      var pay = Number(p.servicePayment) || 0;
+      if (cost > groups[key].totalCost) groups[key].totalCost = cost;
+      groups[key].totalPaid += pay;
+      if (pay === 0 && cost > 0) groups[key].rosterRowIndex = p.rowIndex;
+    });
+    return groups;
+  }
+
+  function renderVendorIconsList() {
+    var container = document.getElementById('vendorIconsList');
+    if (!container) return;
+
+    var groups = computeVendorGroups();
+    var keys = Object.keys(groups).filter(function(k) {
+      var g = groups[k];
+      return g.totalCost > 0 && (g.totalCost - g.totalPaid) > 0;
+    });
+
+    var html = '';
+    if (keys.length === 0) {
+      html += '<div class="empty-list">لا يوجد مجهزون مضافون لهذا العمل</div>';
+    } else {
+      html += keys.map(function(k) {
+        var g = groups[k];
+        return '<div class="payment-item" onclick="selectVendorForPayment(\'' + escapeAttr(g.vendorName) + '\',\'' + escapeAttr(g.serviceName) + '\')">' +
+          '<div class="top-row"><span>' + escapeHtml(g.vendorName) + ' — ' + escapeHtml(g.serviceName) + '</span></div>' +
+          '<div class="sub-row">' + formatNumberAr(g.totalPaid) + ' من ' + formatNumberAr(g.totalCost) + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    html += '<div class="payment-item" onclick="selectOtherExpense()">' +
+      '<div class="top-row"><span>مصاريف اخرى</span></div>' +
+      '</div>';
+
+    container.innerHTML = html;
+  }
+
+  function selectVendorForPayment(vendorName, serviceName) {
     editingVendorRow = null;
-    document.getElementById('vpVendorName').value = '';
-    document.getElementById('vpServiceCost').value = '';
+    document.getElementById('vpVendorName').value = vendorName;
+    document.getElementById('vpServiceName').value = serviceName;
+
+    var groups = computeVendorGroups();
+    var g = groups[vendorName + '||' + serviceName] || { totalCost: 0, totalPaid: 0, rosterRowIndex: null };
+    var remaining = g.totalCost - g.totalPaid;
+
+    document.getElementById('vpServiceCost').value = g.totalCost;
+    document.getElementById('vpRosterRowIndex').value = g.rosterRowIndex || '';
+
+    document.getElementById('vpRequiredTotal').textContent =
+      'الكلفة ' + formatNumber(g.totalCost) + ' — المدفوع ' + formatNumber(g.totalPaid) + ' — المتبقي ' + formatNumber(remaining);
+    document.getElementById('vpRequiredRow').style.display = 'block';
+
     document.getElementById('vpServicePayment').value = '';
     document.getElementById('vpDate').value = todayISO();
     document.getElementById('vpNotes').value = '';
-    if (initData.services && initData.services.length) {
-      document.getElementById('vpServiceName').value = initData.services[0];
-    }
+
+    document.getElementById('vendorPayEntryCard').style.display = 'block';
+    document.getElementById('vpSaveBtn').style.display = 'block';
+    document.getElementById('vpSaveBtn').textContent = 'حفظ الدفعة';
+    document.getElementById('vpCancelEditBtn').style.display = 'block';
+    document.getElementById('vpDeletePaymentBtn').style.display = 'none';
+    document.getElementById('vpDeleteVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
+  }
+
+  function selectOtherExpense() {
+    editingVendorRow = null;
+    document.getElementById('vpVendorName').value = 'مصاريف اخرى';
+    document.getElementById('vpServiceName').value = 'مصاريف اخرى';
+    document.getElementById('vpServiceCost').value = 0;
+    document.getElementById('vpRosterRowIndex').value = '';
+    document.getElementById('vpRequiredRow').style.display = 'none';
+
+    document.getElementById('vpServicePayment').value = '';
+    document.getElementById('vpDate').value = todayISO();
+    document.getElementById('vpNotes').value = '';
+
+    document.getElementById('vendorPayEntryCard').style.display = 'block';
+    document.getElementById('vpSaveBtn').style.display = 'block';
+    document.getElementById('vpSaveBtn').textContent = 'حفظ';
+    document.getElementById('vpCancelEditBtn').style.display = 'block';
+    document.getElementById('vpDeletePaymentBtn').style.display = 'none';
+    document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+  }
+
+  function resetVendorPaymentForm() {
+    editingVendorRow = null;
+    document.getElementById('vpVendorName').value = '';
+    document.getElementById('vpServiceName').value = '';
+    document.getElementById('vpServiceCost').value = '';
+    document.getElementById('vpRosterRowIndex').value = '';
+    document.getElementById('vpServicePayment').value = '';
+    document.getElementById('vpDate').value = todayISO();
+    document.getElementById('vpNotes').value = '';
+    document.getElementById('vpRequiredRow').style.display = 'none';
+    document.getElementById('vendorPayEntryCard').style.display = 'none';
+    document.getElementById('vpSaveBtn').style.display = 'none';
     document.getElementById('vpSaveBtn').textContent = 'حفظ';
     document.getElementById('vpCancelEditBtn').style.display = 'none';
+    document.getElementById('vpDeletePaymentBtn').style.display = 'none';
+    document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    renderVendorIconsList();
   }
 
   function selectVendorPaymentForEdit(idx) {
@@ -1315,12 +1657,70 @@
     editingVendorRow = p.rowIndex;
     document.getElementById('vpVendorName').value = p.vendorName || '';
     document.getElementById('vpServiceName').value = p.serviceName || '';
-    document.getElementById('vpServiceCost').value = formatNumber(p.serviceCost);
+    document.getElementById('vpServiceCost').value = p.serviceCost || 0;
+    document.getElementById('vpRosterRowIndex').value = '';
     document.getElementById('vpServicePayment').value = formatNumber(p.servicePayment);
-    document.getElementById('vpDate').value = p.paymentDate;
+    document.getElementById('vpDate').value = toDashDate(p.paymentDate);
     document.getElementById('vpNotes').value = p.notes || '';
+    document.getElementById('vpRequiredRow').style.display = 'none';
+
+    document.getElementById('vendorPayEntryCard').style.display = 'block';
+    document.getElementById('vpSaveBtn').style.display = 'block';
     document.getElementById('vpSaveBtn').textContent = 'حفظ التعديل';
     document.getElementById('vpCancelEditBtn').style.display = 'block';
+    document.getElementById('vpDeletePaymentBtn').style.display = 'block';
+    document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+  }
+
+  function deleteVendorPaymentConfirm() {
+    if (!editingVendorRow) return;
+    if (!confirm('هل أنت متأكد من حذف هذه الدفعة؟')) return;
+
+    var jobCode = document.getElementById('vpJobCode').value;
+    var payload = { action: 'deleteVendorRow', payment: { rowIndex: editingVendorRow, jobCode: jobCode } };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تم حذف الدفعة');
+          resetVendorPaymentForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
+  }
+
+  function deleteVendorRosterConfirm() {
+    var rosterRowIndex = document.getElementById('vpRosterRowIndex').value;
+    if (!rosterRowIndex) return;
+    if (!confirm('هل أنت متأكد من حذف هذا المجهز؟')) return;
+
+    var jobCode = document.getElementById('vpJobCode').value;
+    var payload = { action: 'deleteVendorRow', payment: { rowIndex: rosterRowIndex, jobCode: jobCode } };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          showToast('تم حذف المجهز');
+          resetVendorPaymentForm();
+          if (currentViewedJob) {
+            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+          }
+        } else {
+          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+      });
   }
 
   function saveVendorPayment() {
@@ -1332,8 +1732,13 @@
     var date = document.getElementById('vpDate').value;
     var notes = document.getElementById('vpNotes').value.trim();
 
-    if (!vendorName || !serviceName || !serviceCost || !servicePayment || !date) {
+    if (!vendorName || !serviceName || !servicePayment || !date) {
       showToast('الرجاء تعبئة جميع الحقول الإلزامية', true);
+      return;
+    }
+
+    if (parseFloat(servicePayment) <= 0) {
+      showToast('يجب أن تكون قيمة الدفعة أكبر من صفر', true);
       return;
     }
 
@@ -1378,7 +1783,6 @@
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
-          loadVendorNames();
         } else {
           showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
         }
