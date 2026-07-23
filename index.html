@@ -41,7 +41,7 @@
   }
 
   input, select, textarea {
-    font-size: 16px !important;
+    font-size: 18px !important;
   }
 
   body {
@@ -81,7 +81,7 @@
   }
 
   .header h1 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--gold));
     -webkit-background-clip: text;
@@ -97,7 +97,7 @@
     border: 1px solid var(--border);
     color: var(--text);
     font-family: 'Almarai', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     padding: 8px 14px;
     border-radius: var(--radius-sm);
@@ -112,7 +112,7 @@
   .screen.active { display: block; }
 
   .section-title {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--muted);
     letter-spacing: 1px;
@@ -122,6 +122,29 @@
     gap: 8px;
   }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .section-title-with-back {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .inline-back-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Almarai', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
 
   .card {
     background: rgba(255, 255, 255, 0.05);
@@ -143,7 +166,7 @@
   .field-row:last-child { border-bottom: none; }
 
   .field-label {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text);
   }
@@ -155,7 +178,7 @@
     border-radius: var(--radius-sm);
     color: var(--text);
     font-family: 'Almarai', sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     padding: 10px 12px;
     outline: none;
@@ -183,7 +206,7 @@
     background: linear-gradient(135deg, var(--accent), var(--gold));
     color: #0f0f14;
     font-family: 'Almarai', sans-serif;
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 800;
     border: none;
     border-radius: var(--radius);
@@ -198,7 +221,7 @@
     background: rgba(255,255,255,0.05);
     color: var(--text);
     font-family: 'Almarai', sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -224,14 +247,14 @@
     -webkit-backdrop-filter: blur(10px);
   }
   .home-btn .title {
-    font-size: 19px;
+    font-size: 21px;
     font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .home-btn .sub {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--muted);
     margin-top: 6px;
     font-weight: 400;
@@ -248,7 +271,7 @@
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--border);
     color: var(--accent);
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     width: 44px;
     height: 44px;
@@ -269,7 +292,7 @@
     justify-content: space-between;
   }
   .job-position {
-    font-size: 22px;
+    font-size: 24px;
     color: var(--muted);
     font-weight: 400;
   }
@@ -289,7 +312,7 @@
     text-align: center;
     color: var(--green);
     font-weight: 800;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .summary-block {
@@ -298,7 +321,7 @@
     margin-bottom: 12px;
     text-align: center;
     font-weight: 800;
-    font-size: 15px;
+    font-size: 17px;
     cursor: pointer;
   }
   .summary-block.green-block {
@@ -326,20 +349,20 @@
   }
   .job-field:last-child { border-bottom: none; }
   .job-field .label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--muted);
     letter-spacing: 0.5px;
     margin-bottom: 4px;
   }
   .job-field .value {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--text);
     word-break: break-word;
   }
   .job-field.code .value {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--gold));
     -webkit-background-clip: text;
@@ -362,7 +385,7 @@
     background: linear-gradient(135deg, var(--green), #00b368);
     color: #052e1a;
     font-family: 'Almarai', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 800;
     border: none;
     border-radius: var(--radius);
@@ -377,7 +400,7 @@
     background: linear-gradient(135deg, var(--accent), var(--gold));
     color: #2b2000;
     font-family: 'Almarai', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 800;
     border: none;
     border-radius: var(--radius);
@@ -403,22 +426,43 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text);
   }
   .payment-item .top-row .amt { color: var(--green); white-space: nowrap; }
   .payment-item .top-row .amt.amt-orange { color: #ff8c42; }
   .payment-item .sub-row {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--muted);
     margin-top: 4px;
   }
+  .vendor-name-line {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: right;
+  }
+  .vendor-name-line.vendor-name-selected { color: var(--accent); }
+  .vendor-amount-line {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    margin-top: 4px;
+  }
+  .vendor-amount-line.amt-orange { color: #ff8c42; }
+  .cost-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .cost-line .field-label { margin: 0; }
   .empty-list {
     padding: 16px;
     text-align: center;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 15px;
   }
 
   .ltr-text {
@@ -431,7 +475,7 @@
     text-align: center;
     padding: 60px 20px;
     color: var(--muted);
-    font-size: 15px;
+    font-size: 17px;
   }
 
   .toast {
@@ -443,7 +487,7 @@
     border: 1px solid var(--accent);
     color: var(--text);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
     padding: 12px 22px;
     border-radius: var(--radius-sm);
     z-index: 99999;
@@ -483,7 +527,7 @@
   }
 
   .modal-title {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--gold));
     -webkit-background-clip: text;
@@ -505,7 +549,7 @@
     border-radius: var(--radius-sm);
     color: var(--muted);
     font-family: 'Almarai', sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -516,7 +560,7 @@
     border-radius: var(--radius-sm);
     color: #0f0f14;
     font-family: 'Almarai', sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 800;
     cursor: pointer;
   }
@@ -525,7 +569,7 @@
     text-align: center;
     padding: 60px 20px;
     color: var(--muted);
-    font-size: 14px;
+    font-size: 16px;
   }
 </style>
 </head>
@@ -762,20 +806,33 @@
   <input type="hidden" id="vpServiceCost">
   <input type="hidden" id="vpRosterRowIndex">
 
-  <div class="section-title">اختر المجهز</div>
+  <div class="section-title-with-back">
+    <span>اختر المجهز</span>
+    <button class="inline-back-btn" onclick="goBackScreen()">رجوع</button>
+  </div>
   <div class="card" id="vendorIconsList"></div>
 
   <div class="card" id="vendorPayEntryCard" style="display:none;">
-    <div class="field-row" id="vpRequiredRow" style="display:none;">
-      <div class="field-label">كلفة الخدمة</div>
-      <div class="value" id="vpRequiredTotal">-</div>
+    <div id="vpRequiredRow" style="display:none; padding:14px 16px;">
+      <div class="cost-line">
+        <span class="field-label">الكلفة</span>
+        <span class="value" id="vpCostValue">-</span>
+      </div>
+      <div class="cost-line">
+        <span class="field-label">المدفوع</span>
+        <span class="value" id="vpPaidValue">-</span>
+      </div>
+      <div class="cost-line">
+        <span class="field-label">المتبقي</span>
+        <span class="value" id="vpRemainingValue">-</span>
+      </div>
     </div>
     <div class="field-row">
-      <div class="field-label">دفعة الخدمة<span class="req">*</span></div>
+      <div class="field-label">المبلغ<span class="req">*</span></div>
       <input type="text" inputmode="decimal" class="field-input" id="vpServicePayment" placeholder="0" oninput="formatInput(this)">
     </div>
     <div class="field-row">
-      <div class="field-label">تاريخ الدفعة<span class="req">*</span></div>
+      <div class="field-label">التاريخ<span class="req">*</span></div>
       <input type="date" class="field-input" id="vpDate">
     </div>
     <div class="field-row">
@@ -881,6 +938,7 @@
       return;
     }
     header.style.display = '';
+    document.getElementById('headerTitle').textContent = (id === 'screenAddVendor') ? 'اضافة مجهز' : 'تكلفة وسعر العمل';
 
     if (id === 'screenHome') {
       backBtn.classList.remove('show');
@@ -988,16 +1046,16 @@
       return;
     }
 
+    if (vendorNames.indexOf(name) === -1) vendorNames.push(name);
+    populateVendorNameSelect();
+    document.getElementById('avVendorName').value = name;
+    document.getElementById('newVendorModal').classList.remove('open');
+    showToast('تمت إضافة المجهز إلى القائمة');
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addVendorName', name: name }) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
-        if (res.success) {
-          if (vendorNames.indexOf(name) === -1) vendorNames.push(name);
-          populateVendorNameSelect();
-          document.getElementById('avVendorName').value = name;
-          document.getElementById('newVendorModal').classList.remove('open');
-          showToast('تمت إضافة المجهز إلى القائمة');
-        } else {
+        if (!res.success) {
           showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
         }
       })
@@ -1072,6 +1130,30 @@
       return;
     }
 
+    var guessedCode = guessNextJobCode();
+    var optimisticJob = {
+      jobCode: guessedCode,
+      jobName: jobName,
+      customerName: customerName,
+      jobCost: Number(jobCost) || 0,
+      jobPrice: Number(jobPrice) || 0,
+      jobDate: jobDate,
+      jobStatus: jobStatus,
+      notes: notes
+    };
+
+    jobsList.push(optimisticJob);
+    currentJobIndex = jobsList.length - 1;
+
+    screenStack[screenStack.length - 1] = 'screenJobs';
+    showScreen('screenJobs');
+    document.getElementById('jobsLoading').style.display = 'none';
+    document.getElementById('jobsEmpty').style.display = 'none';
+    document.getElementById('jobsContent').style.display = 'block';
+    renderCurrentJob();
+    populateCustomerNameSuggestions();
+    showToast('تم حفظ العمل برمز ' + guessedCode);
+
     var payload = {
       action: 'createJob',
       job: {
@@ -1089,9 +1171,6 @@
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تم حفظ العمل برمز ' + res.jobCode);
-          screenStack[screenStack.length - 1] = 'screenJobs';
-          showScreen('screenJobs');
           loadJobsAndShow(res.jobCode);
         } else {
           showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
@@ -1109,6 +1188,33 @@
     document.getElementById('jobsEmpty').style.display = 'none';
     document.getElementById('jobsContent').style.display = 'none';
     loadJobsAndShow();
+  }
+
+  // Mirrors the backend's Job Code generation so a new job can be shown instantly,
+  // without waiting on the network round trip.
+  function guessNextJobCode() {
+    var maxNum = 0;
+    jobsList.forEach(function(j) {
+      var match = String(j.jobCode || '').match(/^Job_(\d+)$/);
+      if (match) {
+        var num = parseInt(match[1], 10);
+        if (num > maxNum) maxNum = num;
+      }
+    });
+    var nextNum = maxNum + 1;
+    var padded = nextNum < 1000 ? ('000' + nextNum).slice(-3) : String(nextNum);
+    return 'Job_' + padded;
+  }
+
+  // Quietly caches the jobs list in the background at startup so guessNextJobCode()
+  // has accurate data even if the user opens New Job before visiting قيد الانجاز.
+  function loadJobsInBackground() {
+    fetch(SCRIPT_URL + '?action=getJobs')
+      .then(function(r) { return r.json(); })
+      .then(function(jobs) {
+        jobsList = jobs || [];
+      })
+      .catch(function(err) {});
   }
 
   function loadJobsAndShow(focusJobCode) {
@@ -1262,6 +1368,27 @@
       return;
     }
 
+    var idx = jobsList.findIndex(function(j) { return j.jobCode === jobCode; });
+    if (idx >= 0) {
+      jobsList[idx].jobName = jobName;
+      jobsList[idx].customerName = customerName;
+      jobsList[idx].jobCost = Number(jobCost) || 0;
+      jobsList[idx].jobPrice = Number(jobPrice) || 0;
+      jobsList[idx].jobDate = jobDate;
+      jobsList[idx].jobStatus = jobStatus;
+      jobsList[idx].notes = notes;
+      currentJobIndex = idx;
+    }
+
+    screenStack[screenStack.length - 1] = 'screenJobs';
+    showScreen('screenJobs');
+    document.getElementById('jobsLoading').style.display = 'none';
+    document.getElementById('jobsEmpty').style.display = 'none';
+    document.getElementById('jobsContent').style.display = 'block';
+    renderCurrentJob();
+    populateCustomerNameSuggestions();
+    showToast('تم حفظ التعديلات');
+
     var payload = {
       action: 'updateJob',
       job: {
@@ -1280,9 +1407,6 @@
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تم حفظ التعديلات');
-          screenStack[screenStack.length - 1] = 'screenJobs';
-          showScreen('screenJobs');
           loadJobsAndShow(jobCode);
         } else {
           showToast(res.error || 'حدث خطأ أثناء الحفظ', true);
@@ -1398,12 +1522,13 @@
     var jobCode = document.getElementById('cpJobCode').value;
     var payload = { action: 'deleteCustomerPayment', payment: { rowIndex: editingCustomerRow, jobCode: jobCode } };
 
+    showToast('تم حذف الدفعة');
+    resetCustomerPaymentForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تم حذف الدفعة');
-          resetCustomerPaymentForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1447,12 +1572,13 @@
 
     var wasEditing = !!editingCustomerRow;
 
+    showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة الزبون');
+    resetCustomerPaymentForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة الزبون');
-          resetCustomerPaymentForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1516,12 +1642,13 @@
       payment: { jobCode: jobCode, vendorName: vendorName, serviceName: serviceName, serviceCost: serviceCost, notes: notes, jobDate: jobDate }
     };
 
+    showToast('تمت إضافة المجهز');
+    resetAddVendorForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تمت إضافة المجهز');
-          resetAddVendorForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1559,6 +1686,11 @@
     var container = document.getElementById('vendorIconsList');
     if (!container) return;
 
+    var isEntryOpen = document.getElementById('vendorPayEntryCard').style.display === 'block';
+    var selectedVendor = document.getElementById('vpVendorName').value;
+    var selectedService = document.getElementById('vpServiceName').value;
+    var selectedKey = isEntryOpen ? (selectedVendor + '||' + selectedService) : null;
+
     var groups = computeVendorGroups();
     var keys = Object.keys(groups).filter(function(k) {
       var g = groups[k];
@@ -1571,14 +1703,18 @@
     } else {
       html += keys.map(function(k) {
         var g = groups[k];
+        var nameClass = (k === selectedKey) ? 'vendor-name-line vendor-name-selected' : 'vendor-name-line';
         return '<div class="payment-item" onclick="selectVendorForPayment(\'' + escapeAttr(g.vendorName) + '\',\'' + escapeAttr(g.serviceName) + '\')">' +
-          '<div class="top-row"><span>' + escapeHtml(g.vendorName) + ' — ' + escapeHtml(g.serviceName) + '</span><span class="amt amt-orange">' + formatNumberAr(g.totalPaid) + ' من ' + formatNumberAr(g.totalCost) + '</span></div>' +
+          '<div class="' + nameClass + '">' + escapeHtml(g.vendorName) + ' — ' + escapeHtml(g.serviceName) + '</div>' +
+          '<div class="vendor-amount-line amt-orange">' + formatNumberAr(g.totalPaid) + ' من ' + formatNumberAr(g.totalCost) + '</div>' +
           '</div>';
       }).join('');
     }
 
+    var otherKey = 'مصاريف اخرى||مصاريف اخرى';
+    var otherNameClass = (otherKey === selectedKey) ? 'vendor-name-line vendor-name-selected' : 'vendor-name-line';
     html += '<div class="payment-item" onclick="selectOtherExpense()">' +
-      '<div class="top-row"><span>مصاريف اخرى</span></div>' +
+      '<div class="' + otherNameClass + '">مصاريف اخرى</div>' +
       '</div>';
 
     container.innerHTML = html;
@@ -1596,8 +1732,9 @@
     document.getElementById('vpServiceCost').value = g.totalCost;
     document.getElementById('vpRosterRowIndex').value = g.rosterRowIndex || '';
 
-    document.getElementById('vpRequiredTotal').textContent =
-      'الكلفة ' + formatNumber(g.totalCost) + ' — المدفوع ' + formatNumber(g.totalPaid) + ' — المتبقي ' + formatNumber(remaining);
+    document.getElementById('vpCostValue').textContent = formatNumber(g.totalCost);
+    document.getElementById('vpPaidValue').textContent = formatNumber(g.totalPaid);
+    document.getElementById('vpRemainingValue').textContent = formatNumber(remaining);
     document.getElementById('vpRequiredRow').style.display = 'block';
 
     document.getElementById('vpServicePayment').value = '';
@@ -1610,6 +1747,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'none';
     document.getElementById('vpDeleteVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
+    renderVendorIconsList();
   }
 
   function selectOtherExpense() {
@@ -1630,6 +1768,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'none';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    renderVendorIconsList();
   }
 
   function resetVendorPaymentForm() {
@@ -1670,6 +1809,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'block';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    renderVendorIconsList();
   }
 
   function deleteVendorPaymentConfirm() {
@@ -1679,12 +1819,13 @@
     var jobCode = document.getElementById('vpJobCode').value;
     var payload = { action: 'deleteVendorRow', payment: { rowIndex: editingVendorRow, jobCode: jobCode } };
 
+    showToast('تم حذف الدفعة');
+    resetVendorPaymentForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تم حذف الدفعة');
-          resetVendorPaymentForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1705,12 +1846,13 @@
     var jobCode = document.getElementById('vpJobCode').value;
     var payload = { action: 'deleteVendorRow', payment: { rowIndex: rosterRowIndex, jobCode: jobCode } };
 
+    showToast('تم حذف المجهز');
+    resetVendorPaymentForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast('تم حذف المجهز');
-          resetVendorPaymentForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1774,12 +1916,13 @@
 
     var wasEditing = !!editingVendorRow;
 
+    showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة المجهز');
+    resetVendorPaymentForm();
+
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          showToast(wasEditing ? 'تم تحديث الدفعة' : 'تم حفظ دفعة المجهز');
-          resetVendorPaymentForm();
           if (currentViewedJob) {
             loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
           }
@@ -1795,6 +1938,7 @@
   // ===== INIT =====
   history.replaceState({ depth: 1 }, '', '');
   loadInitData();
+  loadJobsInBackground();
 </script>
 
 </body>
