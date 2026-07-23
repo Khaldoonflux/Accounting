@@ -6,8 +6,11 @@
 <meta name="theme-color" content="#0a0410">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="تكلفة وسعر العمل">
-<title>حاسبة تكلفة وسعر العمل</title>
+<meta name="apple-mobile-web-app-title" content="حسابات الزبائن والمجهزين">
+<title>حسابات الزبائن والمجهزين</title>
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItit2LPYp9io2KfYqiDYp9mE2LLYqNin2KbZhiDZiNin2YTZhdis2YfYstmK2YYiLCAic2hvcnRfbmFtZSI6ICLYrdiz2KfYqNin2Kog2KfZhNiy2KjYp9im2YYg2YjYp9mE2YXYrNmH2LLZitmGIiwgInN0YXJ0X3VybCI6ICIuLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwNDEwIiwgInRoZW1lX2NvbG9yIjogIiMwYTA0MTAiLCAiZGlyIjogInJ0bCIsICJsYW5nIjogImFyIiwgImljb25zIjogW3sic3JjIjogIkFjY291bnRpbmctSWNvbi5qcGciLCAic2l6ZXMiOiAiMTAwMHgxMDAwIiwgInR5cGUiOiAiaW1hZ2UvanBlZyIsICJwdXJwb3NlIjogImFueSJ9LCB7InNyYyI6ICJBY2NvdW50aW5nLUljb24uanBnIiwgInNpemVzIjogIjEwMDB4MTAwMCIsICJ0eXBlIjogImltYWdlL2pwZWciLCAicHVycG9zZSI6ICJtYXNrYWJsZSJ9XX0=">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgODAwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzAwNjM3MDt9LmNscy0ye2ZpbGw6I2ZmZjt9LmNscy0ze2ZpbGw6I2Y1YWIwNTt9LmNscy00e2ZpbGw6IzMzYTEzOTt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAwLDE0M2MtMTQxLjkzLDAtMjU3LDExNS0yNTcsMjU3czExNSwyNTcsMjU3LDI1N1M2NTcsNTQxLjkzLDY1Nyw0MDAsNTQxLjkzLDE0Myw0MDAsMTQzWm0wLDQ3OC42OWMtMTIyLjQ1LDAtMjIxLjcxLTk5LjI2LTIyMS43MS0yMjEuNzFTMjc3LjU1LDE3OC4yOSw0MDAsMTc4LjI5LDYyMS43MSwyNzcuNTUsNjIxLjcxLDQwMCw1MjIuNDUsNjIxLjcxLDQwMCw2MjEuNzFaIi8+PGNpcmNsZSBjbGFzcz0iY2xzLTEiIGN4PSI0MDAiIGN5PSI0MDAiIHI9IjE4OC41Ii8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTQ2LjExLDMxNi44M0ExNzAuMDgsMTcwLjA4LDAsMSwwLDcxNi4xOSw0ODYuOTEsMTcwLjA4LDE3MC4wOCwwLDAsMCw1NDYuMTEsMzE2LjgzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTU0Ni4xMSwzNDUuMTdBMTQxLjc0LDE0MS43NCwwLDEsMCw2ODcuODQsNDg2LjkxLDE0MS43MywxNDEuNzMsMCwwLDAsNTQ2LjExLDM0NS4xN1oiLz48cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjQ0Ni45IiB5PSI0NjAuODIiIHdpZHRoPSIxOTguNDMiIGhlaWdodD0iNTIuMTciIHJ4PSIyNi4wOSIvPjxjaXJjbGUgY2xhc3M9ImNscy0yIiBjeD0iMjUzLjg5IiBjeT0iMzEzLjA5IiByPSIxNzAuMDgiLz48Y2lyY2xlIGNsYXNzPSJjbHMtNCIgY3g9IjI1My44OSIgY3k9IjMxMy4wOSIgcj0iMTQxLjczIi8+PHJlY3QgY2xhc3M9ImNscy0yIiB4PSIyMjcuOCIgeT0iMjEzLjg4IiB3aWR0aD0iNTIuMTciIGhlaWdodD0iMTk4LjQzIiByeD0iMjYuMDkiIHRyYW5zZm9ybT0ibWF0cml4KDAsIC0xLCAxLCAwLCAtNTkuMiwgNTY2Ljk4KSIvPjxyZWN0IGNsYXNzPSJjbHMtMiIgeD0iMjI3LjgiIHk9IjIxMy44OCIgd2lkdGg9IjUyLjE3IiBoZWlnaHQ9IjE5OC40MyIgcng9IjI2LjA5Ii8+PC9zdmc+">
+<link rel="apple-touch-icon" href="Accounting-Icon.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -577,7 +580,7 @@
 
 <div class="header">
   <button class="back-btn" id="backBtn" onclick="goBackScreen()">رجوع</button>
-  <h1 id="headerTitle">تكلفة وسعر العمل</h1>
+  <h1 id="headerTitle">حسابات الزبائن والمجهزين</h1>
 </div>
 
 <div class="container">
@@ -938,7 +941,7 @@
       return;
     }
     header.style.display = '';
-    document.getElementById('headerTitle').textContent = (id === 'screenAddVendor') ? 'اضافة مجهز' : 'تكلفة وسعر العمل';
+    document.getElementById('headerTitle').textContent = (id === 'screenAddVendor') ? 'اضافة مجهز' : 'حسابات الزبائن والمجهزين';
 
     if (id === 'screenHome') {
       backBtn.classList.remove('show');
