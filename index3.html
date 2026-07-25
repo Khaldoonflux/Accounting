@@ -1275,6 +1275,9 @@
     document.getElementById('navPrev').disabled = currentJobIndex <= 0;
     document.getElementById('navNext').disabled = currentJobIndex >= jobsList.length - 1;
 
+    document.getElementById('custSummary').textContent = '-';
+    document.getElementById('vendSummary').textContent = '-';
+
     loadJobPaymentsAndSummary(job.jobCode, job.jobPrice, job.jobCost);
   }
 
