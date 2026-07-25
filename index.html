@@ -93,7 +93,7 @@
 
   .back-btn {
     position: absolute;
-    right: 16px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255,255,255,0.06);
@@ -163,15 +163,13 @@
     display: flex;
     flex-direction: column;
     padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
     gap: 8px;
   }
-  .field-row:last-child { border-bottom: none; }
 
   .field-label {
     font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
+    font-weight: 400;
+    color: var(--muted);
   }
   .field-label .req { color: var(--accent); margin-inline-start: 3px; }
 
@@ -461,6 +459,9 @@
     padding: 4px 0;
   }
   .cost-line .field-label { margin: 0; }
+  .compact-field-wrap { padding: 10px 16px; }
+  .field-input-centered { text-align: center; }
+  .field-input-centered::placeholder { text-align: center; color: var(--muted); }
   .empty-list {
     padding: 16px;
     text-align: center;
@@ -773,6 +774,9 @@
 
 <!-- CUSTOMER PAYMENT SCREEN -->
 <div class="screen" id="screenCustomerPayment" style="max-width:500px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px 60px;">
+  <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+    <button class="inline-back-btn" onclick="goBackScreen()">رجوع</button>
+  </div>
   <div class="card">
     <div class="field-row">
       <div class="field-label">رمز العمل</div>
@@ -830,17 +834,14 @@
         <span class="value" id="vpRemainingValue">-</span>
       </div>
     </div>
-    <div class="field-row">
-      <div class="field-label">المبلغ<span class="req">*</span></div>
-      <input type="text" inputmode="decimal" class="field-input" id="vpServicePayment" placeholder="0" oninput="formatInput(this)">
+    <div class="compact-field-wrap">
+      <input type="text" inputmode="decimal" class="field-input field-input-centered" id="vpServicePayment" placeholder="المبلغ" oninput="formatInput(this)">
     </div>
-    <div class="field-row">
-      <div class="field-label">التاريخ<span class="req">*</span></div>
+    <div class="compact-field-wrap">
       <input type="date" class="field-input" id="vpDate">
     </div>
-    <div class="field-row">
-      <div class="field-label">ملاحظات</div>
-      <textarea class="field-textarea" id="vpNotes"></textarea>
+    <div class="compact-field-wrap">
+      <textarea class="field-textarea field-input-centered" id="vpNotes" placeholder="ملاحظات"></textarea>
     </div>
   </div>
   <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="margin-top:8px;display:none;">حفظ</button>
@@ -941,7 +942,10 @@
       return;
     }
     header.style.display = '';
-    document.getElementById('headerTitle').textContent = (id === 'screenAddVendor') ? 'اضافة مجهز' : 'حسابات الزبائن والمجهزين';
+    var titleText = 'حسابات الزبائن والمجهزين';
+    if (id === 'screenAddVendor') titleText = 'اضافة مجهز';
+    else if (id === 'screenNewJob') titleText = 'اضافة عمل جديد';
+    document.getElementById('headerTitle').textContent = titleText;
 
     if (id === 'screenHome') {
       backBtn.classList.remove('show');
@@ -1321,24 +1325,29 @@
     if (custPayments.length === 0) {
       custList.innerHTML = '<div class="empty-list">لا توجد دفعات مسجلة</div>';
     } else {
-      custList.innerHTML = custPayments.map(function(p, idx) {
-        return '<div class="payment-item" onclick="selectCustomerPaymentForEdit(' + idx + ')">' +
+      var custHtml = [];
+      for (var ci = custPayments.length - 1; ci >= 0; ci--) {
+        var p = custPayments[ci];
+        custHtml.push('<div class="payment-item" onclick="selectCustomerPaymentForEdit(' + ci + ')">' +
           '<div class="top-row"><span class="ltr-text">' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
           (p.notes ? '<div class="sub-row">' + escapeHtml(p.notes) + '</div>' : '') +
-          '</div>';
-      }).join('');
+          '</div>');
+      }
+      custList.innerHTML = custHtml.join('');
     }
 
     var vendList = document.getElementById('vendorPaymentsList');
     var vendPayments = detail.vendorPayments || [];
-    var vendHtml = vendPayments.map(function(p, idx) {
-      if (!(Number(p.servicePayment) > 0)) return '';
-      return '<div class="payment-item" onclick="selectVendorPaymentForEdit(' + idx + ')">' +
-        '<div class="top-row"><span>' + escapeHtml(p.vendorName) + ' — ' + escapeHtml(p.serviceName) + '</span><span class="amt">' + formatNumber(p.servicePayment) + '</span></div>' +
-        '<div class="sub-row"><span class="ltr-text">' + escapeHtml(p.paymentDate) + '</span>' + (p.notes ? ' — ' + escapeHtml(p.notes) : '') + '</div>' +
-        '</div>';
-    }).filter(function(h) { return h; }).join('');
-    vendList.innerHTML = vendHtml || '<div class="empty-list">لا توجد دفعات مسجلة</div>';
+    var vendHtml = [];
+    for (var vi = vendPayments.length - 1; vi >= 0; vi--) {
+      var vp = vendPayments[vi];
+      if (!(Number(vp.servicePayment) > 0)) continue;
+      vendHtml.push('<div class="payment-item" onclick="selectVendorPaymentForEdit(' + vi + ')">' +
+        '<div class="top-row"><span>' + escapeHtml(vp.vendorName) + ' — ' + escapeHtml(vp.serviceName) + '</span><span class="amt">' + formatNumber(vp.servicePayment) + '</span></div>' +
+        '<div class="sub-row"><span class="ltr-text">' + escapeHtml(vp.paymentDate) + '</span>' + (vp.notes ? ' — ' + escapeHtml(vp.notes) : '') + '</div>' +
+        '</div>');
+    }
+    vendList.innerHTML = vendHtml.join('') || '<div class="empty-list">لا توجد دفعات مسجلة</div>';
   }
 
   function openEditJob() {
@@ -1942,6 +1951,23 @@
   history.replaceState({ depth: 1 }, '', '');
   loadInitData();
   loadJobsInBackground();
+
+  // Desktop equivalents: Esc = back gesture, Left/Right arrows = swipe between jobs
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      goBackScreen();
+      return;
+    }
+
+    var jobsScreen = document.getElementById('screenJobs');
+    if (jobsScreen && jobsScreen.classList.contains('active')) {
+      if (e.key === 'ArrowLeft') {
+        navigateJob(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigateJob(1);
+      }
+    }
+  });
 </script>
 
 </body>
