@@ -73,6 +73,7 @@
   body > * { position: relative; z-index: 1; }
 
   .header {
+    position: relative;
     background: linear-gradient(135deg, #0f0521 0%, #1a0f2e 50%, #2d1b4e 100%);
     padding: calc(24px + env(safe-area-inset-top)) 20px 20px;
     text-align: center;
@@ -162,9 +163,10 @@
   .field-row {
     display: flex;
     flex-direction: column;
-    padding: 14px 16px;
+    padding: 14px 16px 0;
     gap: 8px;
   }
+  .field-row:last-child { padding-bottom: 14px; }
 
   .field-label {
     font-size: 16px;
