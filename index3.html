@@ -334,6 +334,16 @@
     border: 1px solid rgba(255, 193, 7, 0.2);
     color: var(--accent);
   }
+  .summary-block.overpaid-block {
+    background: #FF0000;
+    color: var(--accent);
+  }
+  .overpaid-warning-text {
+    color: var(--danger);
+    font-weight: 700;
+    text-align: center;
+    margin-top: 8px;
+  }
   .summary-block .field-label {
     color: inherit;
     text-align: right;
@@ -682,6 +692,7 @@
           <div id="vendSummary">-</div>
         </div>
         <div class="summary-block neutral-block" id="addVendorBlock" onclick="openAddVendorPage()">اضافة مجهز</div>
+        <div id="jobOverpaidWarningText" class="overpaid-warning-text" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -857,6 +868,7 @@
   <div class="card" id="vendorPaymentsList"></div>
 
   <div class="summary-block yellow-block" id="vpPageSummary">-</div>
+  <div class="summary-block overpaid-block" id="vpOverpaidWarning" style="display:none;"></div>
 </div>
 
 <datalist id="customerNameList"></datalist>
@@ -1319,6 +1331,22 @@
     setTextIfExists('cpPageSummary', custText);
     setTextIfExists('vendSummary', vendText);
     setTextIfExists('vpPageSummary', vendText);
+
+    var isOverpaid = vendRemaining < 0;
+    var overpaidAmount = isOverpaid ? Math.abs(vendRemaining) : 0;
+    var warningText = 'لقد تم دفع مبلغ اكثر من كلفة العمل بمقدار ' + formatNumber(overpaidAmount);
+
+    var jobWarningEl = document.getElementById('jobOverpaidWarningText');
+    if (jobWarningEl) {
+      jobWarningEl.textContent = warningText;
+      jobWarningEl.style.display = isOverpaid ? 'block' : 'none';
+    }
+
+    var vpWarningEl = document.getElementById('vpOverpaidWarning');
+    if (vpWarningEl) {
+      vpWarningEl.textContent = warningText;
+      vpWarningEl.style.display = isOverpaid ? 'block' : 'none';
+    }
   }
 
   function setTextIfExists(id, text) {
