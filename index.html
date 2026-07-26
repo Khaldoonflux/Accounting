@@ -176,6 +176,12 @@
     width: 100%;
     text-align: right;
   }
+
+  input[type="date"] { color-scheme: dark; }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(70%) sepia(15%) saturate(500%) hue-rotate(215deg) brightness(105%);
+    cursor: pointer;
+  }
   .field-input[readonly] { color: var(--gold); opacity: 0.9; }
   .field-textarea { resize: vertical; min-height: 60px; font-weight: 400; }
 
