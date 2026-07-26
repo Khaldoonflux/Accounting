@@ -749,7 +749,7 @@
         <textarea class="field-textarea" id="avNotes"></textarea>
       </div>
     </div>
-    <button class="btn-vendor-pay" onclick="saveAddVendorRoster()" style="margin-top:8px;">اضافة</button>
+    <button class="btn-vendor-pay" id="avSaveBtn" onclick="saveAddVendorRoster()" style="margin-top:8px;">اضافة</button>
   </div>
 
 </div>
@@ -843,10 +843,15 @@
       <textarea class="field-textarea field-input-centered" id="vpNotes" placeholder="ملاحظات"></textarea>
     </div>
   </div>
-  <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="margin-top:8px;display:none;">حفظ</button>
-  <button class="btn-secondary" id="vpCancelEditBtn" style="display:none;" onclick="resetVendorPaymentForm()">إلغاء</button>
-  <button class="btn-secondary" id="vpDeletePaymentBtn" style="display:none;" onclick="deleteVendorPaymentConfirm()">حذف الدفعة</button>
-  <button class="btn-secondary" id="vpDeleteVendorBtn" style="display:none;" onclick="deleteVendorRosterConfirm()">حذف المجهز</button>
+  <div class="payment-actions">
+    <button class="btn-vendor-pay" id="vpSaveBtn" onclick="saveVendorPayment()" style="display:none; margin-top:0;">حفظ</button>
+    <button class="btn-secondary" id="vpCancelEditBtn" style="display:none;" onclick="resetVendorPaymentForm()">إلغاء</button>
+  </div>
+  <div class="payment-actions">
+    <button class="btn-secondary" id="vpDeleteVendorBtn" style="display:none;" onclick="deleteVendorRosterConfirm()">حذف المجهز</button>
+    <button class="btn-secondary" id="vpEditVendorBtn" style="display:none;" onclick="openEditVendorRoster()">تعديل المجهز</button>
+  </div>
+  <button class="btn-secondary" id="vpDeletePaymentBtn" style="display:none; margin-top:16px;" onclick="deleteVendorPaymentConfirm()">حذف الدفعة</button>
 
   <div class="section-title">دفعات المجهزين</div>
   <div class="card" id="vendorPaymentsList"></div>
@@ -1616,6 +1621,8 @@
     goToScreen('screenVendorPayment');
   }
 
+  var editingVendorRosterRow = null;
+
   function openAddVendorPage() {
     if (currentJobIndex < 0) return;
     var job = jobsList[currentJobIndex];
@@ -1623,7 +1630,32 @@
     resetVendorPaymentForm();
     document.getElementById('avJobCode').value = job.jobCode;
     populateSelect('avServiceName', initData.services || []);
+    editingVendorRosterRow = null;
+    document.getElementById('avSaveBtn').textContent = 'اضافة';
     resetAddVendorForm();
+    goToScreen('screenVendorPayment');
+    goToScreen('screenAddVendor');
+  }
+
+  function openEditVendorRoster() {
+    var rosterRowIndex = document.getElementById('vpRosterRowIndex').value;
+    if (!rosterRowIndex) return;
+
+    var rosterEntry = currentVendorPayments.find(function(p) { return String(p.rowIndex) === String(rosterRowIndex); });
+    if (!rosterEntry) return;
+
+    var jobCode = document.getElementById('vpJobCode').value;
+    document.getElementById('avJobCode').value = jobCode;
+    populateSelect('avServiceName', initData.services || []);
+    document.getElementById('avServiceName').value = rosterEntry.serviceName || '';
+    populateVendorNameSelect();
+    document.getElementById('avVendorName').value = rosterEntry.vendorName || '';
+    document.getElementById('avServiceCost').value = formatNumber(rosterEntry.serviceCost);
+    document.getElementById('avNotes').value = rosterEntry.notes || '';
+
+    editingVendorRosterRow = Number(rosterRowIndex);
+    document.getElementById('avSaveBtn').textContent = 'حفظ التعديلات';
+
     goToScreen('screenVendorPayment');
     goToScreen('screenAddVendor');
   }
@@ -1649,14 +1681,25 @@
       return;
     }
 
-    var jobDate = currentViewedJob ? currentViewedJob.jobDate : '';
+    var wasEditing = !!editingVendorRosterRow;
+    var payload;
 
-    var payload = {
-      action: 'addVendorRoster',
-      payment: { jobCode: jobCode, vendorName: vendorName, serviceName: serviceName, serviceCost: serviceCost, notes: notes, jobDate: jobDate }
-    };
+    if (wasEditing) {
+      payload = {
+        action: 'updateVendorRoster',
+        payment: { rowIndex: editingVendorRosterRow, jobCode: jobCode, vendorName: vendorName, serviceName: serviceName, serviceCost: serviceCost, notes: notes }
+      };
+    } else {
+      var jobDate = currentViewedJob ? currentViewedJob.jobDate : '';
+      payload = {
+        action: 'addVendorRoster',
+        payment: { jobCode: jobCode, vendorName: vendorName, serviceName: serviceName, serviceCost: serviceCost, notes: notes, jobDate: jobDate }
+      };
+    }
 
-    showToast('تمت إضافة المجهز');
+    showToast(wasEditing ? 'تم حفظ تعديلات المجهز' : 'تمت إضافة المجهز');
+    editingVendorRosterRow = null;
+    document.getElementById('avSaveBtn').textContent = 'اضافة';
     resetAddVendorForm();
 
     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
@@ -1761,6 +1804,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'none';
     document.getElementById('vpDeleteVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
+    document.getElementById('vpEditVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
     renderVendorIconsList();
   }
 
@@ -1782,6 +1826,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'none';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    document.getElementById('vpEditVendorBtn').style.display = 'none';
     renderVendorIconsList();
   }
 
@@ -1801,6 +1846,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'none';
     document.getElementById('vpDeletePaymentBtn').style.display = 'none';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    document.getElementById('vpEditVendorBtn').style.display = 'none';
     renderVendorIconsList();
   }
 
@@ -1823,6 +1869,7 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'block';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
+    document.getElementById('vpEditVendorBtn').style.display = 'none';
     renderVendorIconsList();
   }
 
