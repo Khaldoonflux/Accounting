@@ -137,6 +137,14 @@
     border-radius: var(--radius-sm);
     cursor: pointer;
   }
+  .job-code-inline {
+    font-size: 16px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: normal;
+  }
 
   .card {
     background: rgba(255, 255, 255, 0.05);
@@ -458,6 +466,7 @@
     margin-top: 4px;
   }
   .vendor-amount-line.amt-orange { color: #ff8c42; }
+  .payment-selected-text { color: #ff8c42; }
   .cost-line {
     display: flex;
     justify-content: space-between;
@@ -825,6 +834,7 @@
 
   <div class="section-title-with-back">
     <span>اختر المجهز</span>
+    <span id="vpJobCodeDisplay" class="job-code-inline"></span>
     <button class="inline-back-btn" onclick="goBackScreen()">رجوع</button>
   </div>
   <div class="card" id="vendorIconsList"></div>
@@ -860,15 +870,16 @@
   </div>
   <div class="payment-actions">
     <button class="btn-secondary" id="vpDeleteVendorBtn" style="display:none;" onclick="deleteVendorRosterConfirm()">حذف المجهز</button>
+    <button class="btn-secondary" id="vpDeletePaymentBtn" style="display:none;" onclick="deleteVendorPaymentConfirm()">حذف الدفعة</button>
     <button class="btn-secondary" id="vpEditVendorBtn" style="display:none;" onclick="openEditVendorRoster()">تعديل المجهز</button>
   </div>
-  <button class="btn-secondary" id="vpDeletePaymentBtn" style="display:none; margin-top:16px;" onclick="deleteVendorPaymentConfirm()">حذف الدفعة</button>
 
   <div class="section-title">دفعات المجهزين</div>
   <div class="card" id="vendorPaymentsList"></div>
 
   <div class="summary-block yellow-block" id="vpPageSummary">-</div>
   <div class="summary-block overpaid-block" id="vpOverpaidWarning" style="display:none;"></div>
+  <div class="summary-block neutral-block" onclick="openAddVendorPage()">اضافة مجهز</div>
 </div>
 
 <datalist id="customerNameList"></datalist>
@@ -1363,8 +1374,9 @@
       var custHtml = [];
       for (var ci = custPayments.length - 1; ci >= 0; ci--) {
         var p = custPayments[ci];
+        var custDateClass = (editingCustomerRow && p.rowIndex === editingCustomerRow) ? 'ltr-text payment-selected-text' : 'ltr-text';
         custHtml.push('<div class="payment-item" onclick="selectCustomerPaymentForEdit(' + ci + ')">' +
-          '<div class="top-row"><span class="ltr-text">' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
+          '<div class="top-row"><span class="' + custDateClass + '">' + escapeHtml(p.paymentDate) + '</span><span class="amt">' + formatNumber(p.payment) + '</span></div>' +
           (p.notes ? '<div class="sub-row">' + escapeHtml(p.notes) + '</div>' : '') +
           '</div>');
       }
@@ -1377,8 +1389,9 @@
     for (var vi = vendPayments.length - 1; vi >= 0; vi--) {
       var vp = vendPayments[vi];
       if (!(Number(vp.servicePayment) > 0)) continue;
+      var vendNameClass = (editingVendorRow && vp.rowIndex === editingVendorRow) ? 'payment-selected-text' : '';
       vendHtml.push('<div class="payment-item" onclick="selectVendorPaymentForEdit(' + vi + ')">' +
-        '<div class="top-row"><span>' + escapeHtml(vp.vendorName) + ' — ' + escapeHtml(vp.serviceName) + '</span><span class="amt">' + formatNumber(vp.servicePayment) + '</span></div>' +
+        '<div class="top-row"><span class="' + vendNameClass + '">' + escapeHtml(vp.vendorName) + ' — ' + escapeHtml(vp.serviceName) + '</span><span class="amt">' + formatNumber(vp.servicePayment) + '</span></div>' +
         '<div class="sub-row"><span class="ltr-text">' + escapeHtml(vp.paymentDate) + '</span>' + (vp.notes ? ' — ' + escapeHtml(vp.notes) : '') + '</div>' +
         '</div>');
     }
@@ -1540,6 +1553,10 @@
     goToScreen('screenCustomerPayment');
   }
 
+  function refreshPaymentListsHighlight() {
+    renderPaymentLists({ customerPayments: currentCustomerPayments, vendorPayments: currentVendorPayments });
+  }
+
   function resetCustomerPaymentForm() {
     editingCustomerRow = null;
     document.getElementById('cpAmount').value = '';
@@ -1548,6 +1565,7 @@
     document.getElementById('cpSaveBtn').textContent = 'حفظ';
     document.getElementById('cpCancelEditBtn').style.display = 'none';
     document.getElementById('cpDeleteBtn').style.display = 'none';
+    refreshPaymentListsHighlight();
   }
 
   function selectCustomerPaymentForEdit(idx) {
@@ -1560,6 +1578,7 @@
     document.getElementById('cpSaveBtn').textContent = 'حفظ التعديل';
     document.getElementById('cpCancelEditBtn').style.display = 'block';
     document.getElementById('cpDeleteBtn').style.display = 'block';
+    refreshPaymentListsHighlight();
   }
 
   function deleteCustomerPaymentConfirm() {
@@ -1645,6 +1664,7 @@
     if (currentJobIndex < 0) return;
     var job = jobsList[currentJobIndex];
     document.getElementById('vpJobCode').value = job.jobCode;
+    document.getElementById('vpJobCodeDisplay').textContent = job.jobCode;
     resetVendorPaymentForm();
     goToScreen('screenVendorPayment');
   }
@@ -1655,6 +1675,7 @@
     if (currentJobIndex < 0) return;
     var job = jobsList[currentJobIndex];
     document.getElementById('vpJobCode').value = job.jobCode;
+    document.getElementById('vpJobCodeDisplay').textContent = job.jobCode;
     resetVendorPaymentForm();
     document.getElementById('avJobCode').value = job.jobCode;
     populateSelect('avServiceName', initData.services || []);
@@ -1834,6 +1855,7 @@
     document.getElementById('vpDeleteVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
     document.getElementById('vpEditVendorBtn').style.display = g.rosterRowIndex ? 'block' : 'none';
     renderVendorIconsList();
+    refreshPaymentListsHighlight();
   }
 
   function selectOtherExpense() {
@@ -1856,6 +1878,7 @@
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
     document.getElementById('vpEditVendorBtn').style.display = 'none';
     renderVendorIconsList();
+    refreshPaymentListsHighlight();
   }
 
   function resetVendorPaymentForm() {
@@ -1876,6 +1899,7 @@
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
     document.getElementById('vpEditVendorBtn').style.display = 'none';
     renderVendorIconsList();
+    refreshPaymentListsHighlight();
   }
 
   function selectVendorPaymentForEdit(idx) {
@@ -1885,7 +1909,12 @@
     document.getElementById('vpVendorName').value = p.vendorName || '';
     document.getElementById('vpServiceName').value = p.serviceName || '';
     document.getElementById('vpServiceCost').value = p.serviceCost || 0;
-    document.getElementById('vpRosterRowIndex').value = '';
+
+    var groups = computeVendorGroups();
+    var g = groups[(p.vendorName || '').trim() + '||' + (p.serviceName || '').trim()];
+    var rosterRowIndex = g ? g.rosterRowIndex : null;
+    document.getElementById('vpRosterRowIndex').value = rosterRowIndex || '';
+
     document.getElementById('vpServicePayment').value = formatNumber(p.servicePayment);
     document.getElementById('vpDate').value = toDashDate(p.paymentDate);
     document.getElementById('vpNotes').value = p.notes || '';
@@ -1897,8 +1926,9 @@
     document.getElementById('vpCancelEditBtn').style.display = 'block';
     document.getElementById('vpDeletePaymentBtn').style.display = 'block';
     document.getElementById('vpDeleteVendorBtn').style.display = 'none';
-    document.getElementById('vpEditVendorBtn').style.display = 'none';
+    document.getElementById('vpEditVendorBtn').style.display = rosterRowIndex ? 'block' : 'none';
     renderVendorIconsList();
+    refreshPaymentListsHighlight();
   }
 
   function deleteVendorPaymentConfirm() {
