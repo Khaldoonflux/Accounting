@@ -791,6 +791,21 @@
   </div>
 </div>
 
+<!-- GENERIC CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <div class="card" style="margin-bottom:0;">
+      <div class="field-row">
+        <div class="value" id="confirmModalMessage" style="text-align:center;"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel-btn" onclick="closeConfirmModal()">إلغاء</button>
+      <button class="modal-save-btn" onclick="confirmModalConfirmed()">تأكيد</button>
+    </div>
+  </div>
+</div>
+
 <!-- CUSTOMER PAYMENT SCREEN -->
 <div class="screen" id="screenCustomerPayment" style="max-width:500px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px 60px;">
   <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
@@ -1096,6 +1111,25 @@
       .catch(function(err) {
         showToast('تعذر الاتصال بالخادم', true);
       });
+  }
+
+  var confirmModalCallback = null;
+
+  function showConfirmModal(message, onConfirm) {
+    document.getElementById('confirmModalMessage').textContent = message;
+    confirmModalCallback = onConfirm;
+    document.getElementById('confirmModal').classList.add('open');
+  }
+
+  function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('open');
+    confirmModalCallback = null;
+  }
+
+  function confirmModalConfirmed() {
+    var cb = confirmModalCallback;
+    closeConfirmModal();
+    if (cb) cb();
   }
 
   function populateDatalist(id, list) {
@@ -1583,28 +1617,28 @@
 
   function deleteCustomerPaymentConfirm() {
     if (!editingCustomerRow) return;
-    if (!confirm('هل أنت متأكد من حذف هذه الدفعة؟')) return;
+    showConfirmModal('هل أنت متأكد من حذف هذه الدفعة؟', function() {
+      var jobCode = document.getElementById('cpJobCode').value;
+      var payload = { action: 'deleteCustomerPayment', payment: { rowIndex: editingCustomerRow, jobCode: jobCode } };
 
-    var jobCode = document.getElementById('cpJobCode').value;
-    var payload = { action: 'deleteCustomerPayment', payment: { rowIndex: editingCustomerRow, jobCode: jobCode } };
+      showToast('تم حذف الدفعة');
+      resetCustomerPaymentForm();
 
-    showToast('تم حذف الدفعة');
-    resetCustomerPaymentForm();
-
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res.success) {
-          if (currentViewedJob) {
-            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res.success) {
+            if (currentViewedJob) {
+              loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+            }
+          } else {
+            showToast(res.error || 'حدث خطأ أثناء الحذف', true);
           }
-        } else {
-          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
-        }
-      })
-      .catch(function(err) {
-        showToast('تعذر الاتصال بالخادم', true);
-      });
+        })
+        .catch(function(err) {
+          showToast('تعذر الاتصال بالخادم', true);
+        });
+    });
   }
 
   function saveCustomerPayment() {
@@ -1933,55 +1967,55 @@
 
   function deleteVendorPaymentConfirm() {
     if (!editingVendorRow) return;
-    if (!confirm('هل أنت متأكد من حذف هذه الدفعة؟')) return;
+    showConfirmModal('هل أنت متأكد من حذف هذه الدفعة؟', function() {
+      var jobCode = document.getElementById('vpJobCode').value;
+      var payload = { action: 'deleteVendorRow', payment: { rowIndex: editingVendorRow, jobCode: jobCode } };
 
-    var jobCode = document.getElementById('vpJobCode').value;
-    var payload = { action: 'deleteVendorRow', payment: { rowIndex: editingVendorRow, jobCode: jobCode } };
+      showToast('تم حذف الدفعة');
+      resetVendorPaymentForm();
 
-    showToast('تم حذف الدفعة');
-    resetVendorPaymentForm();
-
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res.success) {
-          if (currentViewedJob) {
-            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res.success) {
+            if (currentViewedJob) {
+              loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+            }
+          } else {
+            showToast(res.error || 'حدث خطأ أثناء الحذف', true);
           }
-        } else {
-          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
-        }
-      })
-      .catch(function(err) {
-        showToast('تعذر الاتصال بالخادم', true);
-      });
+        })
+        .catch(function(err) {
+          showToast('تعذر الاتصال بالخادم', true);
+        });
+    });
   }
 
   function deleteVendorRosterConfirm() {
     var rosterRowIndex = document.getElementById('vpRosterRowIndex').value;
     if (!rosterRowIndex) return;
-    if (!confirm('هل أنت متأكد من حذف هذا المجهز؟')) return;
+    showConfirmModal('هل أنت متأكد من حذف هذا المجهز؟', function() {
+      var jobCode = document.getElementById('vpJobCode').value;
+      var payload = { action: 'deleteVendorRow', payment: { rowIndex: rosterRowIndex, jobCode: jobCode } };
 
-    var jobCode = document.getElementById('vpJobCode').value;
-    var payload = { action: 'deleteVendorRow', payment: { rowIndex: rosterRowIndex, jobCode: jobCode } };
+      showToast('تم حذف المجهز');
+      resetVendorPaymentForm();
 
-    showToast('تم حذف المجهز');
-    resetVendorPaymentForm();
-
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res.success) {
-          if (currentViewedJob) {
-            loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res.success) {
+            if (currentViewedJob) {
+              loadJobPaymentsAndSummary(currentViewedJob.jobCode, currentViewedJob.jobPrice, currentViewedJob.jobCost);
+            }
+          } else {
+            showToast(res.error || 'حدث خطأ أثناء الحذف', true);
           }
-        } else {
-          showToast(res.error || 'حدث خطأ أثناء الحذف', true);
-        }
-      })
-      .catch(function(err) {
-        showToast('تعذر الاتصال بالخادم', true);
-      });
+        })
+        .catch(function(err) {
+          showToast('تعذر الاتصال بالخادم', true);
+        });
+    });
   }
 
   function saveVendorPayment() {
