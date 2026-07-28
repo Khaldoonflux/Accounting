@@ -307,6 +307,7 @@
     border-radius: var(--radius);
     border: 1px solid rgba(255, 193, 7, 0.2);
     padding: 4px;
+    margin-bottom: 12px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     touch-action: pan-y;
@@ -321,6 +322,7 @@
   }
 
   .summary-block {
+    position: relative;
     border-radius: var(--radius);
     padding: 16px;
     margin-bottom: 12px;
@@ -352,17 +354,50 @@
     text-align: center;
     margin-top: 8px;
   }
-  .summary-block .field-label {
-    color: inherit;
-    text-align: right;
-    margin-bottom: 4px;
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-items: center;
+    column-gap: 10px;
   }
+  .summary-col-word,
+  .summary-col-labels,
+  .summary-col-values,
+  .summary-col-spacer {
+    min-width: 0;
+  }
+  .summary-col-word {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.85;
+    text-align: right;
+  }
+  .summary-col-labels {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    position: relative;
+    top: -3px;
+  }
+  .summary-col-values {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .summary-col-spacer {}
+  .summary-bold { font-weight: 800; }
 
   .job-field {
     padding: 16px;
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
   }
-  .job-field:last-child { border-bottom: none; }
+  .job-field:first-child { border-top: none; }
   .job-field .label {
     font-size: 14px;
     font-weight: 700;
@@ -693,14 +728,37 @@
         </div>
 
         <div class="summary-block green-block" id="custSummaryBlock" onclick="openCustomerPaymentPage()">
-          <div class="field-label">من الزبون</div>
-          <div id="custSummary">-</div>
+          <div class="summary-grid">
+            <div class="summary-col-word">من الزبون</div>
+            <div class="summary-col-labels">
+              <span class="summary-bold">المجموع</span>
+              <span>المدفوع</span>
+              <span>المتبقي</span>
+            </div>
+            <div class="summary-col-values">
+              <span class="summary-bold" id="custTotalValue">-</span>
+              <span id="custPaidValue">-</span>
+              <span id="custRemainingValue">-</span>
+            </div>
+            <div class="summary-col-spacer"></div>
+          </div>
         </div>
         <div class="summary-block yellow-block" id="vendSummaryBlock" onclick="openVendorPaymentPage()">
-          <div class="field-label">للمجهزين</div>
-          <div id="vendSummary">-</div>
+          <div class="summary-grid">
+            <div class="summary-col-word">للمجهزين</div>
+            <div class="summary-col-labels">
+              <span class="summary-bold">المجموع</span>
+              <span>المدفوع</span>
+              <span>المتبقي</span>
+            </div>
+            <div class="summary-col-values">
+              <span class="summary-bold" id="vendTotalValue">-</span>
+              <span id="vendPaidValue">-</span>
+              <span id="vendRemainingValue">-</span>
+            </div>
+            <div class="summary-col-spacer"></div>
+          </div>
         </div>
-        <div class="summary-block neutral-block" id="addVendorBlock" onclick="openAddVendorPage()">اضافة مجهز</div>
         <div id="jobOverpaidWarningText" class="overpaid-warning-text" style="display:none;"></div>
       </div>
     </div>
@@ -836,7 +894,22 @@
   <div class="section-title">دفعات الزبون</div>
   <div class="card" id="customerPaymentsList"></div>
 
-  <div class="summary-block green-block" id="cpPageSummary">-</div>
+  <div class="summary-block green-block">
+    <div class="summary-grid">
+      <div class="summary-col-word">من الزبون</div>
+      <div class="summary-col-labels">
+        <span class="summary-bold">المجموع</span>
+        <span>المدفوع</span>
+        <span>المتبقي</span>
+      </div>
+      <div class="summary-col-values">
+        <span class="summary-bold" id="cpTotalValue">-</span>
+        <span id="cpPaidValue">-</span>
+        <span id="cpRemainingValue">-</span>
+      </div>
+      <div class="summary-col-spacer"></div>
+    </div>
+  </div>
 </div>
 
 <!-- VENDOR PAYMENT SCREEN -->
@@ -892,7 +965,22 @@
   <div class="section-title">دفعات المجهزين</div>
   <div class="card" id="vendorPaymentsList"></div>
 
-  <div class="summary-block yellow-block" id="vpPageSummary">-</div>
+  <div class="summary-block yellow-block">
+    <div class="summary-grid">
+      <div class="summary-col-word">للمجهزين</div>
+      <div class="summary-col-labels">
+        <span class="summary-bold">المجموع</span>
+        <span>المدفوع</span>
+        <span>المتبقي</span>
+      </div>
+      <div class="summary-col-values">
+        <span class="summary-bold" id="vpTotalValue">-</span>
+        <span id="vpPaidValue2">-</span>
+        <span id="vpRemainingValue2">-</span>
+      </div>
+      <div class="summary-col-spacer"></div>
+    </div>
+  </div>
   <div class="summary-block overpaid-block" id="vpOverpaidWarning" style="display:none;"></div>
   <div class="summary-block neutral-block" onclick="openAddVendorPage()">اضافة مجهز</div>
 </div>
@@ -1336,8 +1424,12 @@
     document.getElementById('navPrev').disabled = currentJobIndex <= 0;
     document.getElementById('navNext').disabled = currentJobIndex >= jobsList.length - 1;
 
-    document.getElementById('custSummary').textContent = '-';
-    document.getElementById('vendSummary').textContent = '-';
+    document.getElementById('custTotalValue').textContent = '-';
+    document.getElementById('custPaidValue').textContent = '-';
+    document.getElementById('custRemainingValue').textContent = '-';
+    document.getElementById('vendTotalValue').textContent = '-';
+    document.getElementById('vendPaidValue').textContent = '-';
+    document.getElementById('vendRemainingValue').textContent = '-';
 
     loadJobPaymentsAndSummary(job.jobCode, job.jobPrice, job.jobCost);
   }
@@ -1366,16 +1458,24 @@
     var vendPaid = 0;
     (detail.vendorPayments || []).forEach(function(p) { vendPaid += Number(p.servicePayment) || 0; });
 
-    var custRemaining = (Number(jobPrice) || 0) - custPaid;
-    var vendRemaining = (Number(jobCost) || 0) - vendPaid;
+    var custTotal = Number(jobPrice) || 0;
+    var vendTotal = Number(jobCost) || 0;
+    var custRemaining = custTotal - custPaid;
+    var vendRemaining = vendTotal - vendPaid;
 
-    var custText = 'مدفوع ' + formatNumber(custPaid) + ' — متبقي ' + formatNumber(custRemaining);
-    var vendText = 'مدفوع ' + formatNumber(vendPaid) + ' — متبقي ' + formatNumber(vendRemaining);
+    setTextIfExists('custTotalValue', formatNumber(custTotal));
+    setTextIfExists('custPaidValue', formatNumber(custPaid));
+    setTextIfExists('custRemainingValue', formatNumber(custRemaining));
+    setTextIfExists('cpTotalValue', formatNumber(custTotal));
+    setTextIfExists('cpPaidValue', formatNumber(custPaid));
+    setTextIfExists('cpRemainingValue', formatNumber(custRemaining));
 
-    setTextIfExists('custSummary', custText);
-    setTextIfExists('cpPageSummary', custText);
-    setTextIfExists('vendSummary', vendText);
-    setTextIfExists('vpPageSummary', vendText);
+    setTextIfExists('vendTotalValue', formatNumber(vendTotal));
+    setTextIfExists('vendPaidValue', formatNumber(vendPaid));
+    setTextIfExists('vendRemainingValue', formatNumber(vendRemaining));
+    setTextIfExists('vpTotalValue', formatNumber(vendTotal));
+    setTextIfExists('vpPaidValue2', formatNumber(vendPaid));
+    setTextIfExists('vpRemainingValue2', formatNumber(vendRemaining));
 
     var isOverpaid = vendRemaining < 0;
     var overpaidAmount = isOverpaid ? Math.abs(vendRemaining) : 0;
