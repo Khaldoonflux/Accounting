@@ -320,6 +320,18 @@
     font-weight: 800;
     font-size: 18px;
   }
+  .job-status-select {
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    text-align-last: center;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .job-status-select.status-ongoing { color: #ffffff; }
+  .job-status-select.status-cancelled { color: var(--danger); }
+  .job-status-select.status-completed { color: var(--green); }
 
   .summary-block {
     position: relative;
@@ -730,8 +742,8 @@
             <div class="label">ملاحظات</div>
             <div class="value" id="jvNotes"></div>
           </div>
-          <div class="job-field" id="jvCompletedField" style="display:none;">
-            <div class="value completed-text">مكتمل</div>
+          <div class="job-field" id="jvStatusField">
+            <select class="field-select job-status-select" id="jvStatusSelect" onclick="event.stopPropagation()" onchange="updateJobStatusFromView(this.value)"></select>
           </div>
         </div>
 
@@ -1430,7 +1442,26 @@
     document.getElementById('jvJobName').textContent = job.jobName || '-';
     document.getElementById('jvCustomerName').textContent = job.customerName || '-';
     document.getElementById('jvNotes').textContent = job.notes || '-';
-    document.getElementById('jvCompletedField').style.display = (job.jobStatus === 'مكتمل') ? 'block' : 'none';
+        var statusSelect = document.getElementById('jvStatusSelect');
+    if (statusSelect) {
+      statusSelect.innerHTML = '';
+      (initData.statuses || []).forEach(function(opt) {
+        var o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        statusSelect.appendChild(o);
+      });
+      statusSelect.value = job.jobStatus || '';
+
+      statusSelect.className = 'field-select job-status-select';
+      if (job.jobStatus === 'قيد الانجاز') {
+        statusSelect.classList.add('status-ongoing');
+      } else if (job.jobStatus === 'ملغي') {
+        statusSelect.classList.add('status-cancelled');
+      } else if (job.jobStatus === 'مكتمل') {
+        statusSelect.classList.add('status-completed');
+      }
+    }
 
     document.getElementById('jobPosition').textContent = (currentJobIndex + 1) + ' / ' + jobsList.length;
     document.getElementById('navPrev').disabled = currentJobIndex <= 0;
@@ -1687,6 +1718,51 @@
       }
     }, { passive: true });
   })();
+
+  function updateJobStatusFromView(newStatus) {
+    if (currentJobIndex < 0) return;
+    var job = jobsList[currentJobIndex];
+    var oldStatus = job.jobStatus;
+    if (newStatus === oldStatus) return;
+
+    job.jobStatus = newStatus;
+    renderCurrentJob();
+
+    var statusMsg = 'تم تحديث الحالة';
+    if (newStatus === 'مكتمل') statusMsg = 'تم تحديث الحالة إلى مكتمل';
+    else if (newStatus === 'قيد الانجاز') statusMsg = 'تم تحديث الحالة إلى قيد الانجاز';
+    else if (newStatus === 'ملغي') statusMsg = 'تم تحديث الحالة إلى ملغي';
+    showToast(statusMsg);
+
+    var payload = {
+      action: 'updateJob',
+      job: {
+        jobCode: job.jobCode,
+        jobName: job.jobName || '',
+        customerName: job.customerName || '',
+        jobCost: String(job.jobCost || ''),
+        jobPrice: String(job.jobPrice || ''),
+        jobDate: toDashDate(job.jobDate),
+        jobStatus: newStatus,
+        notes: job.notes || ''
+      }
+    };
+
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (!res.success) {
+          showToast(res.error || 'حدث خطأ أثناء تحديث الحالة', true);
+          job.jobStatus = oldStatus;
+          renderCurrentJob();
+        }
+      })
+      .catch(function(err) {
+        showToast('تعذر الاتصال بالخادم', true);
+        job.jobStatus = oldStatus;
+        renderCurrentJob();
+      });
+  }
 
   // ===== CUSTOMER PAYMENT PAGE =====
   var editingCustomerRow = null;
