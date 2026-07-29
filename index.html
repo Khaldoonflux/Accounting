@@ -356,27 +356,36 @@
   }
   .summary-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 3fr;
     align-items: center;
     column-gap: 10px;
   }
   .summary-col-word,
-  .summary-col-labels,
-  .summary-col-values,
-  .summary-col-spacer {
+  .summary-col-content {
     min-width: 0;
   }
   .summary-col-word {
-    font-size: 13px;
+    align-self: start;
+    font-size: 15px;
     font-weight: 400;
     opacity: 0.85;
     text-align: right;
+  }
+  .summary-col-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    padding-left: 16px;
+  }
+  .summary-col-labels,
+  .summary-col-values {
+    min-width: 0;
   }
   .summary-col-labels {
     display: flex;
     flex-direction: column;
     text-align: right;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 1.5;
     position: relative;
@@ -386,11 +395,10 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 1.5;
   }
-  .summary-col-spacer {}
   .summary-bold { font-weight: 800; }
 
   .job-field {
@@ -730,33 +738,35 @@
         <div class="summary-block green-block" id="custSummaryBlock" onclick="openCustomerPaymentPage()">
           <div class="summary-grid">
             <div class="summary-col-word">من الزبون</div>
-            <div class="summary-col-labels">
-              <span class="summary-bold">المجموع</span>
-              <span>المدفوع</span>
-              <span>المتبقي</span>
+            <div class="summary-col-content">
+              <div class="summary-col-labels">
+                <span class="summary-bold">المجموع</span>
+                <span>المدفوع</span>
+                <span>المتبقي</span>
+              </div>
+              <div class="summary-col-values">
+                <span class="summary-bold" id="custTotalValue">-</span>
+                <span id="custPaidValue">-</span>
+                <span id="custRemainingValue">-</span>
+              </div>
             </div>
-            <div class="summary-col-values">
-              <span class="summary-bold" id="custTotalValue">-</span>
-              <span id="custPaidValue">-</span>
-              <span id="custRemainingValue">-</span>
-            </div>
-            <div class="summary-col-spacer"></div>
           </div>
         </div>
         <div class="summary-block yellow-block" id="vendSummaryBlock" onclick="openVendorPaymentPage()">
           <div class="summary-grid">
             <div class="summary-col-word">للمجهزين</div>
-            <div class="summary-col-labels">
-              <span class="summary-bold">المجموع</span>
-              <span>المدفوع</span>
-              <span>المتبقي</span>
+            <div class="summary-col-content">
+              <div class="summary-col-labels">
+                <span class="summary-bold">المجموع</span>
+                <span>المدفوع</span>
+                <span>المتبقي</span>
+              </div>
+              <div class="summary-col-values">
+                <span class="summary-bold" id="vendTotalValue">-</span>
+                <span id="vendPaidValue">-</span>
+                <span id="vendRemainingValue">-</span>
+              </div>
             </div>
-            <div class="summary-col-values">
-              <span class="summary-bold" id="vendTotalValue">-</span>
-              <span id="vendPaidValue">-</span>
-              <span id="vendRemainingValue">-</span>
-            </div>
-            <div class="summary-col-spacer"></div>
           </div>
         </div>
         <div id="jobOverpaidWarningText" class="overpaid-warning-text" style="display:none;"></div>
@@ -897,17 +907,18 @@
   <div class="summary-block green-block">
     <div class="summary-grid">
       <div class="summary-col-word">من الزبون</div>
-      <div class="summary-col-labels">
-        <span class="summary-bold">المجموع</span>
-        <span>المدفوع</span>
-        <span>المتبقي</span>
+      <div class="summary-col-content">
+        <div class="summary-col-labels">
+          <span class="summary-bold">المجموع</span>
+          <span>المدفوع</span>
+          <span>المتبقي</span>
+        </div>
+        <div class="summary-col-values">
+          <span class="summary-bold" id="cpTotalValue">-</span>
+          <span id="cpPaidValue">-</span>
+          <span id="cpRemainingValue">-</span>
+        </div>
       </div>
-      <div class="summary-col-values">
-        <span class="summary-bold" id="cpTotalValue">-</span>
-        <span id="cpPaidValue">-</span>
-        <span id="cpRemainingValue">-</span>
-      </div>
-      <div class="summary-col-spacer"></div>
     </div>
   </div>
 </div>
@@ -968,17 +979,18 @@
   <div class="summary-block yellow-block">
     <div class="summary-grid">
       <div class="summary-col-word">للمجهزين</div>
-      <div class="summary-col-labels">
-        <span class="summary-bold">المجموع</span>
-        <span>المدفوع</span>
-        <span>المتبقي</span>
+      <div class="summary-col-content">
+        <div class="summary-col-labels">
+          <span class="summary-bold">المجموع</span>
+          <span>المدفوع</span>
+          <span>المتبقي</span>
+        </div>
+        <div class="summary-col-values">
+          <span class="summary-bold" id="vpTotalValue">-</span>
+          <span id="vpPaidValue2">-</span>
+          <span id="vpRemainingValue2">-</span>
+        </div>
       </div>
-      <div class="summary-col-values">
-        <span class="summary-bold" id="vpTotalValue">-</span>
-        <span id="vpPaidValue2">-</span>
-        <span id="vpRemainingValue2">-</span>
-      </div>
-      <div class="summary-col-spacer"></div>
     </div>
   </div>
   <div class="summary-block overpaid-block" id="vpOverpaidWarning" style="display:none;"></div>
